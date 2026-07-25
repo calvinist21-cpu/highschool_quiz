@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>고등수능 퀴즈마스터</title>
+<meta name="theme-color" content="#2f7ff6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#2f7ff6; --sky-deep:#1b5fd0; --sky-soft:#e8f1ff;
+  --sun:#ffb92e; --mint:#22c58b; --coral:#ff6b6b; --grape:#8b6bf2;
+  --ink:#1e2a3a; --ink-soft:#5b6b80; --card:#ffffff; --bg:#eef5ff;
+  --line:#dbe7fa; --ok:#22c58b; --no:#ff6b6b;
+  --r-lg:22px; --r-md:16px; --shadow:0 6px 18px rgba(31,95,208,.10);
+}
+body.dark{
+  --sky:#4d93ff; --sky-deep:#2f7ff6; --sky-soft:#12233f;
+  --ink:#eaf2ff; --ink-soft:#9fb2cc; --card:#16233a; --bg:#0c1626;
+  --line:#243652; --shadow:0 6px 18px rgba(0,0,0,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  background:var(--bg); color:var(--ink);
+  max-width:520px; margin:0 auto; position:relative;
+  min-height:100dvh; display:flex; flex-direction:column;
+}
+h1,h2,h3,.disp{font-family:'Jua','Gowun Dodum',sans-serif; letter-spacing:.2px}
+button{font-family:inherit; border:none; cursor:pointer; background:none; color:inherit}
+.screen{display:none; flex:1; flex-direction:column; padding:20px 18px 90px; animation:fade .25s ease}
+.screen.on{display:flex}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ---------- Welcome ---------- */
+#welcome{justify-content:center; align-items:center; text-align:center; padding-bottom:20px;
+  background:linear-gradient(180deg,#101a33 0%,#1c2f57 50%,#31507f 100%); color:#fff}
+body.dark #welcome{background:linear-gradient(180deg,#080d1a,#101d38 60%,#1b3055)}
+#welcome .stars{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+#welcome .star{position:absolute; color:#fff; opacity:.85; animation:tw 2.4s infinite}
+@keyframes tw{0%,100%{opacity:.15; transform:scale(.8)} 50%{opacity:.95; transform:scale(1.15)}}
+#welcome .brain{font-size:84px; filter:drop-shadow(0 8px 14px rgba(0,0,0,.18)); animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
+#welcome h1{font-size:46px; margin:10px 0 4px; text-shadow:0 3px 0 rgba(0,0,0,.12)}
+#welcome .sub{font-size:15px; opacity:.95; margin-bottom:14px}
+#welcome .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:320px; margin-bottom:8px}
+#welcome .chips span{background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.35);
+  padding:6px 12px; border-radius:999px; font-size:13px}
+#welcome .daily{margin:14px 0 22px; font-size:14px; background:rgba(255,255,255,.16); padding:8px 16px; border-radius:12px}
+#startBtn{background:#ffb92e; color:#5a3a00; font-family:'Jua'; font-size:24px;
+  padding:16px 64px; border-radius:999px; box-shadow:0 8px 0 #d8931a, 0 14px 24px rgba(0,0,0,.18);
+  transition:transform .08s, box-shadow .08s}
+#startBtn:active{transform:translateY(6px); box-shadow:0 2px 0 #d8931a}
+#bgmBtn{position:absolute; top:16px; right:16px; width:44px; height:44px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.6); background:rgba(255,255,255,.25); font-size:20px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5}
+#bgmBtn.off{opacity:.45; filter:grayscale(1)}
+
+/* ---------- Common ---------- */
+.topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
+.topbar .hello{font-size:14px; color:var(--ink-soft)}
+.topbar h2{font-size:24px}
+.pill{background:var(--card); border:1px solid var(--line); border-radius:999px;
+  padding:6px 12px; font-size:13px; display:inline-flex; align-items:center; gap:5px; box-shadow:var(--shadow)}
+.card{background:var(--card); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); border:1px solid var(--line)}
+.section-t{font-size:15px; color:var(--ink-soft); margin:18px 0 8px; font-family:'Jua'}
+
+/* Home */
+#daily-card{background:linear-gradient(120deg,var(--sky),#6aa8ff); color:#fff; border:none;
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:4px}
+#daily-card .t{font-family:'Jua'; font-size:18px}
+#daily-card .d{font-size:13px; opacity:.9; margin-top:3px}
+#daily-card button{background:#fff; color:var(--sky-deep); font-family:'Jua'; font-size:15px;
+  padding:10px 18px; border-radius:999px}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.cat{background:var(--card); border:1px solid var(--line); border-radius:var(--r-md);
+  padding:16px 12px; text-align:center; box-shadow:var(--shadow); transition:transform .1s}
+.cat:active{transform:scale(.96)}
+.cat .ico{font-size:30px; display:block; margin-bottom:6px}
+.cat .nm{font-family:'Jua'; font-size:16px}
+.cat .cnt{font-size:11.5px; color:var(--ink-soft); margin-top:2px}
+.statbar{display:flex; gap:8px; margin-bottom:14px}
+.statbar .card{flex:1; text-align:center; padding:10px 6px}
+.statbar .v{font-family:'Jua'; font-size:20px; color:var(--sky)}
+.statbar .k{font-size:11.5px; color:var(--ink-soft)}
+
+/* Sub sheet */
+#subsheet{position:fixed; inset:0; background:rgba(10,20,40,.45); display:none; align-items:flex-end; z-index:50; max-width:520px; margin:0 auto}
+#subsheet.on{display:flex}
+#subsheet .sheet{background:var(--card); width:100%; border-radius:26px 26px 0 0; padding:20px 18px 28px; animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px); opacity:.6} to{transform:none; opacity:1}}
+#subsheet h3{font-size:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center}
+#subsheet .x{font-size:22px; color:var(--ink-soft); padding:4px 8px}
+.sub-list{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+.sub-btn{background:var(--sky-soft); color:var(--ink); border-radius:14px; padding:14px 10px;
+  font-family:'Jua'; font-size:15px; border:1px solid var(--line)}
+.sub-btn:active{background:var(--line)}
+
+/* Quiz */
+#quiz .qtop{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+#quiz .qtop .back{font-size:20px; padding:4px 8px; color:var(--ink-soft)}
+.prog{flex:1; height:12px; background:var(--line); border-radius:99px; overflow:hidden}
+.prog i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--mint),var(--sky)); border-radius:99px; transition:width .25s}
+#combo{font-family:'Jua'; font-size:14px; color:var(--sun); min-width:52px; text-align:right}
+#qmeta{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px; color:var(--ink-soft)}
+#qcard{min-height:150px; display:flex; flex-direction:column; justify-content:center; text-align:center; position:relative; margin-bottom:12px}
+#qcat{position:absolute; top:10px; left:12px; font-size:12px; background:var(--sky-soft); color:var(--sky-deep); padding:3px 10px; border-radius:99px; font-family:'Jua'}
+body.dark #qcat{color:#bcd6ff}
+.qvoice{position:absolute; top:8px; right:10px; display:flex; gap:6px}
+.qvoice button{font-size:19px; background:var(--sky-soft); border-radius:12px; padding:6px 9px; border:1px solid var(--line)}
+.qvoice button.rec{background:var(--coral); animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)} 50%{transform:scale(1.12)}}
+#qhint{font-size:13.5px; color:var(--ink-soft); margin-bottom:6px; white-space:pre-line}
+#qtext{font-family:'Jua'; font-size:24px; line-height:1.45; padding:14px 6px 4px; white-space:pre-line}
+.choices{display:flex; flex-direction:column; gap:9px}
+.choice{background:var(--card); border:2px solid var(--line); border-radius:var(--r-md);
+  padding:14px; font-size:17px; text-align:left; display:flex; gap:10px; align-items:center; box-shadow:var(--shadow); transition:transform .08s}
+.choice:active{transform:scale(.98)}
+.choice .n{font-family:'Jua'; width:28px; height:28px; border-radius:50%; background:var(--sky-soft);
+  color:var(--sky-deep); display:flex; align-items:center; justify-content:center; font-size:14px; flex:none}
+body.dark .choice .n{color:#bcd6ff}
+.choice.ok{border-color:var(--ok); background:rgba(34,197,139,.12)}
+.choice.no{border-color:var(--no); background:rgba(255,107,107,.12)}
+.choice:disabled{opacity:.92}
+#fb{margin-top:12px; display:none}
+#fb.on{display:block}
+#fb .head{font-family:'Jua'; font-size:19px; margin-bottom:4px}
+#fb .exp{font-size:14.5px; color:var(--ink-soft); line-height:1.55}
+#nextBtn{margin-top:12px; width:100%; background:var(--sky); color:#fff; font-family:'Jua';
+  font-size:18px; padding:15px; border-radius:var(--r-md); box-shadow:0 5px 0 var(--sky-deep)}
+#nextBtn:active{transform:translateY(3px); box-shadow:0 2px 0 var(--sky-deep)}
+
+/* Result */
+#result{justify-content:center; text-align:center}
+#result .big{font-size:70px; margin-bottom:6px}
+#result h2{font-size:30px; margin-bottom:6px}
+#result .score{font-family:'Jua'; font-size:22px; color:var(--sky); margin-bottom:4px}
+#result .xp{font-size:15px; color:var(--ink-soft); margin-bottom:16px}
+#newbadges{display:flex; flex-direction:column; gap:8px; margin-bottom:16px}
+#newbadges .card{display:flex; gap:10px; align-items:center; text-align:left; border-color:var(--sun)}
+#result .btns{display:flex; gap:10px}
+#result .btns button{flex:1; font-family:'Jua'; font-size:16px; padding:14px; border-radius:var(--r-md)}
+#againBtn{background:var(--sky); color:#fff}
+#homeBtn2{background:var(--card); border:1px solid var(--line)}
+
+/* Notebook */
+.wrong-item{margin-bottom:10px}
+.wrong-item .q{font-size:15px; line-height:1.5; margin-bottom:6px}
+.wrong-item .a{font-size:13.5px; color:var(--ok); font-family:'Jua'}
+.wrong-item .meta{font-size:12px; color:var(--ink-soft); margin-top:4px; display:flex; justify-content:space-between; align-items:center}
+.wrong-item .del{color:var(--coral); font-size:12.5px}
+.empty{text-align:center; color:var(--ink-soft); padding:50px 10px; font-size:15px; line-height:1.7}
+.retryAll{width:100%; background:var(--grape); color:#fff; font-family:'Jua'; font-size:17px; padding:14px; border-radius:var(--r-md); margin-bottom:14px}
+
+/* Records */
+.rec-row{display:flex; justify-content:space-between; align-items:center; padding:11px 2px; border-bottom:1px dashed var(--line); font-size:14.5px}
+.rec-row:last-child{border-bottom:none}
+.rec-row b{font-family:'Jua'; color:var(--sky)}
+.medal{font-size:18px; margin-right:6px}
+
+/* My */
+#lvcard{background:linear-gradient(120deg,var(--grape),#b39bff); color:#fff; border:none; margin-bottom:14px}
+#lvcard .lv{font-family:'Jua'; font-size:24px}
+#lvcard .xpbar{height:12px; background:rgba(255,255,255,.3); border-radius:99px; margin:10px 0 6px; overflow:hidden}
+#lvcard .xpbar i{display:block; height:100%; background:#ffe27a; border-radius:99px}
+#lvcard .xptxt{font-size:13px; opacity:.95}
+.badges{display:grid; grid-template-columns:repeat(3,1fr); gap:9px}
+.badge{text-align:center; padding:12px 6px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-md)}
+.badge .i{font-size:26px}
+.badge .n{font-size:12px; margin-top:4px; font-family:'Jua'}
+.badge.off{opacity:.32; filter:grayscale(1)}
+.setrow{display:flex; justify-content:space-between; align-items:center; padding:13px 2px; border-bottom:1px dashed var(--line); font-size:15px}
+.setrow:last-child{border-bottom:none}
+.toggle{width:48px; height:27px; border-radius:99px; background:var(--line); position:relative; transition:background .2s}
+.toggle i{position:absolute; top:3px; left:3px; width:21px; height:21px; background:#fff; border-radius:50%; transition:left .2s; box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.toggle.on{background:var(--mint)}
+.toggle.on i{left:24px}
+#voiceSel{font-family:inherit; font-size:13px; padding:7px 10px; border-radius:10px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink); max-width:170px}
+.danger{color:var(--coral); font-size:14px; padding:12px 0}
+
+/* Bottom nav */
+#nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px;
+  background:var(--card); border-top:1px solid var(--line); display:none; z-index:40;
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+#nav.on{display:flex}
+#nav button{flex:1; text-align:center; font-size:10.5px; color:var(--ink-soft); padding:4px 0}
+#creditTab{color:var(--sky)}
+#nav button .i{font-size:21px; display:block; margin-bottom:2px}
+#nav button.cur{color:var(--sky); font-family:'Jua'}
+
+#toast{position:fixed; bottom:86px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg);
+  padding:10px 18px; border-radius:99px; font-size:14px; opacity:0; pointer-events:none; transition:.25s; z-index:99; white-space:nowrap}
+#toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══════════ 1. Welcome ══════════ -->
+<section class="screen on" id="welcome">
+  <button id="bgmBtn" title="배경음악">🎵</button>
+  <div class="stars" id="stars"></div>
+  <div class="brain">🎯</div>
+  <h1>고등수능</h1>
+  <div class="sub disp">수능 대비 전 영역 실전 퀴즈</div>
+  <div class="chips">
+    <span>📘 국어</span><span>🌐 영어</span><span>∫ 수학</span>
+    <span>🏛️ 한국사</span><span>🔬 통합과학</span><span>🌏 통합사회</span>
+  </div>
+  <div class="daily">✨ 총 <b id="totalQ"></b> 문제 · 매일 새로운 문제!</div>
+  <button id="startBtn">START</button>
+</section>
+
+<!-- ══════════ 2. Home ══════════ -->
+<section class="screen" id="home">
+  <div class="topbar">
+    <div>
+      <div class="hello" id="hello">오늘도 한 걸음, 수능까지 함께 갑니다 📈</div>
+      <h2>오늘 어떤 공부를 할까요?</h2>
+    </div>
+    <span class="pill">🔥 <b id="streakDays">0</b>일</span>
+  </div>
+
+  <div class="statbar">
+    <div class="card"><div class="v" id="stLv">Lv.1</div><div class="k">레벨</div></div>
+    <div class="card"><div class="v" id="stXp">0</div><div class="k">XP</div></div>
+    <div class="card"><div class="v" id="stAcc">-</div><div class="k">정답률</div></div>
+  </div>
+
+  <div class="card" id="daily-card">
+    <div>
+      <div class="t">⭐ 오늘의 도전</div>
+      <div class="d" id="dailyDesc">날마다 바뀌는 10문제!</div>
+    </div>
+    <button onclick="startQuiz('daily')" id="dailyBtn">도전</button>
+  </div>
+
+  <div class="section-t">퀴즈 고르기</div>
+  <div class="grid">
+    <button class="cat" onclick="startQuiz('brain')"><span class="ico">🔬</span><span class="nm">통합과학·사회</span><div class="cnt" id="cntAll">과학·사회 통합</div></button>
+    <button class="cat" onclick="openSub('korean')"><span class="ico">📘</span><span class="nm">국어</span><div class="cnt">어휘·어법·문학</div></button>
+    <button class="cat" onclick="openSub('english')"><span class="ico">🌐</span><span class="nm">영어</span><div class="cnt">수능 어휘·숙어</div></button>
+    <button class="cat" onclick="openSub('math')"><span class="ico">∫</span><span class="nm">수학</span><div class="cnt">방정식·수열·미분</div></button>
+    <button class="cat" onclick="startQuiz('idiom')"><span class="ico">📖</span><span class="nm">사자성어</span><div class="cnt" id="cntIdiom"></div></button>
+    <button class="cat" onclick="startQuiz('proverb')"><span class="ico">💬</span><span class="nm">속담·관용구</span><div class="cnt" id="cntProverb"></div></button>
+    <button class="cat" onclick="startQuiz('quote')"><span class="ico">🏛️</span><span class="nm">한국사</span><div class="cnt" id="cntQuote"></div></button>
+    <button class="cat" onclick="go('notebook')"><span class="ico">📝</span><span class="nm">오답노트</span><div class="cnt" id="cntWrong">0문제</div></button>
+  </div>
+</section>
+
+<!-- Sub sheet -->
+<div id="subsheet"><div class="sheet">
+  <h3><span id="subTitle"></span><button class="x" onclick="closeSub()">✕</button></h3>
+  <div class="sub-list" id="subList"></div>
+</div></div>
+
+<!-- ══════════ 3. Quiz ══════════ -->
+<section class="screen" id="quiz">
+  <div class="qtop">
+    <button class="back" onclick="quitQuiz()">←</button>
+    <div class="prog"><i id="progBar"></i></div>
+    <div id="combo"></div>
+  </div>
+  <div id="qmeta"><span id="qNum">1 / 10</span><span id="qLevel">난이도 ★</span></div>
+  <div class="card" id="qcard">
+    <span id="qcat">국어</span>
+    <div class="qvoice">
+      <button id="ttsBtn" title="문제 읽어주기">🔊</button>
+      <button id="sttBtn" title="말로 답하기">🎤</button>
+    </div>
+    <div id="qhint"></div>
+    <div id="qtext"></div>
+  </div>
+  <div class="choices" id="choices"></div>
+  <div id="fb" class="card">
+    <div class="head" id="fbHead"></div>
+    <div class="exp" id="fbExp"></div>
+  </div>
+  <button id="nextBtn" style="display:none" onclick="nextQ()">다음 문제 →</button>
+</section>
+
+<!-- ══════════ 4. Result ══════════ -->
+<section class="screen" id="result">
+  <div class="big" id="resEmoji">🎉</div>
+  <h2 id="resTitle">참 잘했어요!</h2>
+  <div class="score" id="resScore">10문제 중 8개 정답</div>
+  <div class="xp" id="resXp">+80 XP</div>
+  <div id="newbadges"></div>
+  <div class="btns">
+    <button id="homeBtn2" onclick="go('home')">홈으로</button>
+    <button id="againBtn" onclick="retrySame()">한 번 더!</button>
+  </div>
+</section>
+
+<!-- ══════════ 5. 오답노트 ══════════ -->
+<section class="screen" id="notebook">
+  <div class="topbar"><h2>📝 오답노트</h2><span class="pill" id="nbCount">0문제</span></div>
+  <div id="nbBody"></div>
+</section>
+
+<!-- ══════════ 6. 기록 ══════════ -->
+<section class="screen" id="records">
+  <div class="topbar"><h2>🏆 나의 기록</h2></div>
+  <div class="section-t">이번 주</div>
+  <div class="card" id="weekCard"></div>
+  <div class="section-t">최고 기록</div>
+  <div class="card" id="bestCard"></div>
+  <div class="section-t">영역별 정답률</div>
+  <div class="card" id="catCard"></div>
+</section>
+
+<!-- ══════════ 7. 마이페이지 ══════════ -->
+<section class="screen" id="my">
+  <div class="topbar"><h2>👤 마이페이지</h2></div>
+  <div class="card" id="lvcard">
+    <div class="lv" id="myLv">Lv.1 기초 다지기</div>
+    <div class="xpbar"><i id="myXpBar" style="width:0%"></i></div>
+    <div class="xptxt" id="myXpTxt"></div>
+  </div>
+  <div class="section-t">배지</div>
+  <div class="badges" id="badgeGrid"></div>
+  <div class="section-t">설정</div>
+  <div class="card">
+    <div class="setrow"><span>🌙 다크모드</span><button class="toggle" id="tgDark" onclick="toggleSet('dark')"><i></i></button></div>
+    <div class="setrow"><span>🔊 문제 자동 읽기</span><button class="toggle" id="tgAutoTts" onclick="toggleSet('autoTts')"><i></i></button></div>
+    <div class="setrow"><span>🗣️ 목소리 고르기</span><select id="voiceSel"></select></div>
+    <div class="setrow"><span>🔔 효과음</span><button class="toggle" id="tgSound" onclick="toggleSet('sound')"><i></i></button></div>
+    <div class="setrow"><button class="danger" onclick="resetAll()">전체 기록 초기화</button></div>
+  </div>
+</section>
+
+<!-- Bottom nav -->
+<nav id="nav">
+  <button data-go="home" class="cur"><span class="i">🏠</span>홈</button>
+  <button data-go="quizquick"><span class="i">🧠</span>퀴즈</button>
+  <button data-go="records"><span class="i">🏆</span>기록</button>
+  <button data-go="notebook"><span class="i">📝</span>오답</button>
+  <button data-go="my"><span class="i">👤</span>마이</button>
+  <button id="creditTab" onclick="window.open('https://vision-ai-lab.vercel.app/#home','_blank')"><span class="i">🚀</span>비전AI</button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ════════════════════════════════════════════
+   고등수능 퀴즈마스터 v1.0 (단일 파일 완성본)
+   - 검수된 문제은행 + 수학 무한 자동생성
+   - 적응형 난이도 / TTS·STT / 오답노트 / XP·배지
+   ════════════════════════════════════════════ */
+
+/* ---------- 저장소 (localStorage 실패 시 메모리 대체) ---------- */
+const store = (() => {
+  let mem = {};
+  let ok = true;
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); } catch(e){ ok = false; }
+  return {
+    get(k, d){ try{ if(ok){ const v = localStorage.getItem(k); return v==null? d : JSON.parse(v); } }catch(e){} return (k in mem)? mem[k] : d; },
+    set(k, v){ try{ if(ok){ localStorage.setItem(k, JSON.stringify(v)); return; } }catch(e){} mem[k]=v; },
+    clear(){ try{ if(ok) localStorage.clear(); }catch(e){} mem={}; }
+  };
+})();
+
+/* ---------- 상태 ---------- */
+const DEF = {
+  v:2,
+  xp:0, total:0, correct:0, bestScore:0, bestCombo:0, quizzes:0,
+  streakDays:0, lastDay:"", weekXp:0, weekKey:"",
+  catStat:{},                 // {cat:{t,c}}
+  badges:[],                  // 획득 배지 id
+  wrong:[],                   // 오답노트
+  seen:[],                    // 최근 출제 이력 (중복 방지, LRU)
+  retriedOk:0,                // 오답 재정답 수
+  set:{ dark:false, autoTts:true, sound:true, voice:"", bgm:true },
+  skill:1.0                   // 적응형 난이도 (0.5 ~ 3.0)
+};
+const clone = o => JSON.parse(JSON.stringify(o));
+let S = Object.assign(clone(DEF), store.get("hq_state", {}));
+S.set = Object.assign({ bgm:true }, S.set);
+S.set = Object.assign(clone(DEF.set), S.set || {});
+if(!S.v || S.v < 2){ S.set.autoTts = true; S.v = 2; }   // 음성지원 업데이트: 자동 읽기 켜기
+const save = () => store.set("hq_state", S);
+
+/* ---------- 유틸 ---------- */
+const $ = s => document.querySelector(s);
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function seededRnd(seed){ let s=seed; return ()=>{ s=(s*9301+49297)%233280; return s/233280; }; }
+function todayKey(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function weekKey(){ const d=new Date(); const o=new Date(d.getFullYear(),0,1); const w=Math.ceil(((d-o)/864e5 + o.getDay()+1)/7); return d.getFullYear()+"-W"+w; }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2200); }
+
+/* ---------- 효과음 (WebAudio, 파일 불필요) ---------- */
+let AC=null;
+function beep(freqs, dur=0.12){
+  if(!S.set.sound) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    freqs.forEach((f,i)=>{
+      const o=AC.createOscillator(), g=AC.createGain();
+      o.frequency.value=f; o.type="sine";
+      g.gain.setValueAtTime(0.12, AC.currentTime+i*dur);
+      g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime+(i+1)*dur);
+      o.connect(g); g.connect(AC.destination);
+      o.start(AC.currentTime+i*dur); o.stop(AC.currentTime+(i+1)*dur);
+    });
+  }catch(e){}
+}
+const sndOk  = ()=>beep([660,880]);
+const sndNo  = ()=>beep([300,220],0.16);
+const sndTap = ()=>beep([520],0.06);
+const sndWin = ()=>beep([523,659,784,1047],0.14);
+
+/* ════════════════════════════════════════════
+   문제은행  { cat, sub, lv(1~3), q, hint?, c:[4지선다], a:정답idx, ex:해설, en?:영어읽기 }
+   ════════════════════════════════════════════ */
+const BANK = [];
+const _bkeys = new Set();
+function add(cat,sub,lv,q,c,a,ex,opt){
+  const k = cat+"|"+q;
+  if(_bkeys.has(k)) return;
+  _bkeys.add(k);
+  BANK.push(Object.assign({cat,sub,lv,q,c,a,ex}, opt||{}));
+}
+function mc(correct, pool){
+  const ds = [];
+  const p = [...new Set(pool)].filter(x=>x!==correct);
+  while(ds.length<3 && p.length){ ds.push(p.splice(Math.floor(Math.random()*p.length),1)[0]); }
+  const c = shuffle([correct, ...ds]);
+  return {c, a:c.indexOf(correct)};
+}
+const RAW = {"spell": [["빈칸에 알맞은 말은?\n\"실적이 나빠 가격 인상을 ____할 필요가 있다.\"", ["재고", "제고", "재거", "제거"], 0, "'재고(再考)'는 다시 생각함, '제고(提高)'는 수준을 높임입니다.", 3], ["빈칸에 알맞은 말은?\n\"기업 이미지 ____를 위해 노력했다.\"", ["재고", "제고", "재게", "저고"], 1, "수준을 끌어올린다는 뜻이므로 '제고'가 맞습니다.", 3], ["빈칸에 알맞은 말은?\n\"그 이론은 현실에 ____하는 사례로 반박되었다.\"", ["실재", "실제", "실체", "실재로"], 1, "'실제(實際)'는 사실의 경우나 형편, '실재(實在)'는 실제로 존재함입니다.", 3], ["빈칸에 알맞은 말은?\n\"유령은 ____하지 않는다.\"", ["실제", "실재", "실재화", "실기"], 1, "'실제로 존재한다'는 뜻이므로 '실재'입니다.", 3], ["빈칸에 알맞은 말은?\n\"마라톤 세계 기록을 ____했다.\"", ["갱신", "경신", "갱생", "경심"], 1, "기록을 깨뜨리는 것은 '경신', 계약 기간 연장 등은 '갱신'입니다.", 3], ["빈칸에 알맞은 말은?\n\"여권 유효 기간을 ____했다.\"", ["경신", "갱신", "경질", "갱소"], 1, "문서 효력을 다시 살리는 것은 '갱신'입니다.", 3], ["빈칸에 알맞은 말은?\n\"수출 ____에서 큰 성과를 냈다.\"", ["부분", "부문", "부납", "부분별"], 1, "'부문(部門)'은 분야·갈래, '부분(部分)'은 전체의 일부입니다.", 3], ["빈칸에 알맞은 말은?\n\"낡은 제도를 새 제도로 ____했다.\"", ["가름", "갈음", "가늠", "갸름"], 1, "'갈음'은 다른 것으로 바꾸어 대신함, '가름'은 나누는 것입니다.", 3], ["빈칸에 알맞은 말은?\n\"승부를 ____하는 결정적 한 골\"", ["갈음", "가름", "가늠할", "갸름"], 1, "승부·등급을 나누는 것은 '가름'입니다.", 3], ["빈칸에 알맞은 말은?\n\"거리를 ____해 보았다.\"", ["가름", "가늠", "갈음", "고름"], 1, "'가늠'은 목표나 형편을 어림잡아 헤아림입니다.", 2], ["빈칸에 알맞은 말은?\n\"예상 밖의 질문에 ____스러웠다.\"", ["곤욕", "곤혹", "곤옥", "곤흑"], 1, "'곤혹(困惑)'은 어찌할 바를 모름, '곤욕(困辱)'은 심한 모욕입니다.", 3], ["빈칸에 알맞은 말은?\n\"온갖 ____을 치르고 살아남았다.\"", ["곤혹", "곤욕", "곤액", "곤육"], 1, "'심한 모욕이나 참기 힘든 일'은 '곤욕'입니다.", 3], ["빈칸에 알맞은 말은?\n\"두 사람은 ____ 우정을 쌓았다.\"", ["두꺼운", "두터운", "두툼한", "둔터운"], 1, "신의·정 따위 추상적 관계에는 '두텁다'를 씁니다.", 3], ["빈칸에 알맞은 말은?\n\"면회는 일요일 외에는 ____ 금한다.\"", ["일체", "일절", "일채", "일쩔"], 1, "부정·금지에는 '일절', '모든 것'의 뜻은 '일체'입니다.", 3], ["빈칸에 알맞은 말은?\n\"안주 ____ 를 갖춘 가게\"", ["일절", "일체", "일쩨", "일절로"], 1, "'모든 것'을 뜻할 때는 '일체'입니다.", 3], ["빈칸에 알맞은 말은?\n\"생선을 간장에 ____.\"", ["졸였다", "조렸다", "쫄였다", "저렸다"], 1, "양념이 배도록 국물을 줄이는 것은 '조리다', 마음 애태움은 '졸이다'.", 3], ["빈칸에 알맞은 말은?\n\"합격 발표를 기다리며 마음을 ____.\"", ["조렸다", "졸였다", "조리었다", "줄였다"], 1, "속을 태우며 초조해하는 것은 '(마음을) 졸이다'입니다.", 2], ["빈칸에 알맞은 말은?\n\"김치를 담가 항아리에 ____.\"", ["앉혔다", "안쳤다", "않혔다", "안치었다"], 1, "밥·찌개 등을 솥에 넣어 준비하는 것은 '안치다'입니다.", 3], ["빈칸에 알맞은 말은?\n\"편지 봉투에 우표를 ____.\"", ["부쳤다", "붙였다", "붙혔다", "부치었다"], 1, "맞닿아 떨어지지 않게 하는 것은 '붙이다', 편지를 보내는 것은 '부치다'.", 2], ["빈칸에 알맞은 말은?\n\"삼촌 편에 소포를 ____.\"", ["붙였다", "부쳤다", "붙쳤다", "브쳤다"], 1, "물건을 보내는 것은 '부치다'입니다.", 2], ["빈칸에 알맞은 말은?\n\"홍수로 농사가 ____ 났다.\"", ["결단", "결딴", "결단이", "걸딴"], 1, "망가져 못 쓰게 된 상태는 '결딴', 딱 잘라 정하는 것은 '결단'.", 3], ["다음 중 사이시옷 표기가 올바른 것은? (등굣길)", ["등굣길", "등교길", "하교ㅅ길", "등교낄"], 0, "한자어+고유어 합성에서 사잇소리가 나면 사이시옷을 받쳐 '등굣길'로 씁니다.", 3], ["다음 중 표기가 올바른 것은? (며칟날)", ["며칟날", "며칠날", "몇일날", "몇 일날"], 0, "'며칠'과 '며칟날'이 표준어입니다.", 3], ["다음 중 띄어쓰기가 올바른 것은? (만큼)", ["아는 만큼 보인다", "아는만큼 보인다", "아는 만 큼 보인다", "아는만 큼 보인다"], 0, "용언의 관형형 뒤 '만큼'은 의존 명사이므로 띄어 씁니다.", 3], ["다음 중 띄어쓰기가 올바른 것은? (뿐)", ["너뿐만 아니라", "너 뿐만 아니라", "너뿐 만 아니라", "너 뿐 만 아니라"], 0, "체언 뒤의 '뿐'은 조사이므로 붙여 씁니다.", 3], ["빈칸에 알맞은 말은?\n\"답이 서로 ____ 다시 검토했다.\"", ["틀려서", "달라서", "틀러서", "다러서"], 1, "비교하여 같지 않은 것은 '다르다', 셈이 어긋난 것은 '틀리다'입니다.", 2], ["빈칸에 알맞은 말은?\n\"그는 ____ 몸이 아니라 조심해야 한다.\"", ["홀몸", "홑몸", "혼몸", "홋몸"], 1, "임신 상황에는 '홑몸(아이를 배지 않은 몸)'을 씁니다. '홀몸'은 배우자 없는 몸.", 3], ["빈칸에 알맞은 말은?\n\"소문의 진상을 밝히지 못해 ____만 무성하다.\"", ["반증", "억측", "방증", "논증"], 1, "근거 없이 마구 짐작하는 것은 '억측'입니다.", 2], ["빈칸에 알맞은 말은?\n\"실수하기 ____이다.\"", ["십상", "쉽상", "십쌍", "싑상"], 0, "'꼭 알맞은 상태'를 뜻하는 표준어는 '십상'입니다.", 3], ["다음 중 표기가 올바른 것은? (얽히고설키다)", ["얽히고설키다", "얼키고설키다", "얽히고섥히다", "얼킥고설키다"], 0, "'얽히고설키다'가 표준어입니다.", 3]], "hanja": [["개연성", "그럴 법하다고 여겨지는 성질"], ["필연성", "반드시 그렇게 될 수밖에 없는 성질"], ["당위", "마땅히 그렇게 해야 함"], ["연역", "일반 원리에서 개별 사실을 이끌어 내는 추론"], ["귀납", "개별 사실에서 일반 원리를 이끌어 내는 추론"], ["유기적", "부분들이 서로 밀접하게 연관되어 떼어 낼 수 없는"], ["상충", "서로 맞지 않고 어긋남"], ["상보", "서로 모자란 부분을 보충함"], ["함의", "말이나 글 속에 담긴 숨은 뜻"], ["전제", "결론의 바탕이 되는 판단"], ["논증", "근거를 들어 주장이 참임을 밝힘"], ["반례", "주장이 성립하지 않음을 보여 주는 예"], ["통시적", "시간의 흐름에 따라 살피는"], ["공시적", "같은 시기의 상태를 살피는"], ["자의적", "일정한 원칙 없이 제멋대로 하는"], ["항구적", "변하지 않고 오래가는"], ["가변적", "조건에 따라 변할 수 있는"], ["명제", "참과 거짓을 판별할 수 있는 문장"], ["개괄", "중요한 내용을 대강 추려 냄"], ["부연", "이해를 돕기 위해 덧붙여 설명함"], ["논지", "글이나 말의 핵심 주장"], ["방증", "간접적으로 증명에 도움을 주는 증거"], ["반증", "반대되는 근거를 들어 증명함"], ["소급", "지나간 일까지 거슬러 올라가 효력을 미침"], ["상정", "어떤 상황을 가정하여 생각함"], ["표방", "주장을 앞에 내세움"], ["견지", "어떤 입장을 굳게 지님"], ["피력", "생각을 털어놓고 말함"], ["역량", "일을 해낼 수 있는 힘"], ["귀결", "어떤 결말에 이름"], ["발현", "속에 있던 것이 겉으로 나타남"], ["침잠", "깊이 가라앉아 몰입함"], ["체화", "지식이나 기술을 몸에 배게 함"], ["담보", "보증이 되게 함"], ["결부", "서로 관련지어 붙임"], ["경도", "한쪽으로 마음이 기울어 쏠림"], ["매몰", "한 가지에 파묻혀 빠져 있음"], ["몰각", "깨닫지 못하거나 무시해 버림"], ["상기", "지난 일을 다시 떠올림"], ["환기", "주의나 여론을 불러일으킴"], ["각인", "머릿속에 깊이 새겨짐"], ["필사", "목숨을 걸 만큼 있는 힘을 다함"], ["불식", "의심 따위를 말끔히 없앰"], ["쇄도", "한꺼번에 세차게 몰려듦"], ["미증유", "지금까지 한 번도 있어 본 적이 없음"], ["각축", "서로 이기려고 맞서 다툼"], ["상쇄", "반대되는 것이 서로 영향을 지워 없앰"], ["게재", "글이나 그림을 신문·잡지에 실음"], ["반추", "지난 일을 되풀이하여 곱씹음"], ["천착", "깊이 파고들어 연구함"], ["답습", "예전 방식을 그대로 따름"], ["폐단", "오래되어 생긴 해로운 현상"], ["병폐", "깊이 뿌리박힌 잘못이나 결점"], ["공염불", "실행이 따르지 않는 헛된 말"], ["요원", "까마득히 멀어 이루기 어려움"], ["창출", "전에 없던 것을 처음으로 만들어 냄"], ["구현", "구체적인 모습으로 나타나게 함"], ["정립", "이론이나 체계를 바로 세움"], ["집대성", "여럿을 모아 하나의 체계로 완성함"], ["재편", "짜임새를 고쳐 다시 편성함"], ["개편", "조직이나 체계를 고쳐 새롭게 함"], ["표리", "겉과 속"], ["간극", "두 대상 사이의 틈이나 거리"], ["괴리", "서로 어그러져 동떨어짐"], ["접점", "서로 만나는 공통 지점"], ["귀추", "일이 되어 가는 형편이나 결과"], ["향배", "일이 어느 쪽으로 기울어 가는 형세"], ["추이", "시간에 따라 변해 가는 형편"], ["저변", "어떤 분야의 밑바탕이 되는 부분"], ["토대", "사물이나 일의 기초와 밑바탕"], ["초석", "일의 기초가 되는 중요한 것"], ["효시", "어떤 일의 맨 처음 사례"], ["백미", "여럿 가운데 가장 뛰어난 것"], ["압권", "여럿 가운데 최고로 꼽히는 부분"], ["금자탑", "길이 후세에 남을 뛰어난 업적"], ["시금석", "가치나 능력을 평가하는 기준"], ["가늠자", "판단의 기준이 되는 것"], ["구심점", "활동의 중심이 되는 역할이나 사람"], ["분수령", "일이 다른 방향으로 갈리는 결정적 계기"], ["기폭제", "큰 변화를 일으키는 계기"], ["도화선", "사건이 일어나게 된 직접 원인"], ["청사진", "미래에 대한 구체적 계획이나 구상"], ["가교", "둘 사이를 이어 주는 다리 역할"], ["초미", "매우 급하고 중요한 관심사"], ["화두", "관심을 두어 중요하게 생각하는 주제"], ["필두", "맨 앞자리 또는 첫머리"], ["일가견", "어떤 분야에 대한 자기만의 체계적 견해"], ["조예", "학문이나 예술 분야의 깊은 지식과 경지"], ["안목", "사물의 가치를 분별하는 눈"], ["혜안", "사물을 꿰뚫어 보는 밝은 눈"], ["통념", "사회에 널리 퍼져 있는 일반적 생각"], ["정설", "일반적으로 옳다고 인정되는 학설"], ["궤변", "이치에 맞지 않는 것을 그럴듯하게 꾸민 말"], ["어폐", "말의 표현에 생기는 결함이나 오해의 소지"], ["여지", "어떤 일이 일어날 가능성이나 남은 틈"], ["재량", "스스로 판단하여 처리할 수 있는 권한"], ["소관", "맡아 관리하는 범위"], ["소치", "어떤 까닭으로 생긴 일"], ["귀감", "본받을 만한 모범"], ["사표", "학식과 덕행이 높아 모범이 될 만한 인물"], ["전형", "같은 부류의 특징을 가장 잘 나타내는 본보기"], ["편린", "사물의 극히 작은 한 부분"], ["단면", "사물이나 현상의 부분적인 모습"], ["축도", "전체 모습을 작게 줄여 보여 주는 것"], ["방점", "강조하려는 부분에 찍는 점, 강조점"], ["미봉", "임시변통으로 이리저리 꾸며 댐"], ["호도", "진실을 감추고 흐지부지 덮어 버림"], ["회자", "칭찬을 받으며 사람들 입에 자주 오르내림"], ["설파", "어떤 내용을 강하게 밝혀 말함"], ["갈파", "잘못을 꿰뚫어 보고 큰소리로 지적함"], ["일축", "제안이나 요구를 단번에 물리침"], ["논박", "상대 의견의 잘못을 따져 공격함"], ["항변", "맞서서 자기 주장을 변호함"], ["자문", "전문가나 기관에 의견을 구함"], ["자처", "스스로 그러한 사람인 체하거나 나섬"], ["자부", "자기 능력이나 가치를 스스로 믿음"]], "concept": [["신라 시대에 향찰로 표기된 우리 고유의 시가는?", ["향가", "고려가요", "가사", "악장"], "향가는 향찰로 기록된 신라의 노래로 「제망매가」 등이 있습니다.", 3], ["고려 시대 평민들이 부른 노래로 후렴구가 발달한 갈래는?", ["고려가요", "향가", "시조", "경기체가"], "「청산별곡」, 「가시리」 같은 고려가요(속요)입니다.", 3], ["조선 시대에 발달한 3장 6구 형식의 정형시는?", ["시조", "가사", "향가", "판소리"], "시조는 초·중·종장 3장 6구 45자 내외의 정형시입니다.", 2], ["조선 시대 4음보 연속체의 운문·산문 중간 갈래는?", ["가사", "시조", "향가", "민요"], "「관동별곡」, 「사미인곡」 같은 가사 문학입니다.", 3], ["정철의 「관동별곡」이 속하는 갈래는?", ["가사", "시조", "향가", "고려가요"], "관동 지방 기행을 노래한 조선 전기 가사입니다.", 3], ["소리꾼이 고수의 북장단에 맞춰 부르는 구비 서사 갈래는?", ["판소리", "민요", "무가", "시조창"], "판소리는 창·아니리·발림으로 구성되며 「춘향가」 등 다섯 마당이 전합니다.", 2], ["판소리에서 소리꾼이 말로 풀어 가는 부분은?", ["아니리", "창", "발림", "추임새"], "창은 노래, 아니리는 말, 발림은 몸짓, 추임새는 고수·청중의 호응입니다.", 3], ["우리나라 최초의 한글 소설로 알려진 작품은?", ["홍길동전", "춘향전", "구운몽", "금오신화"], "허균의 「홍길동전」이 최초의 한글 소설로 평가됩니다.", 2], ["김시습이 지은 우리나라 최초의 한문 소설집은?", ["금오신화", "구운몽", "사씨남정기", "열하일기"], "「금오신화」는 전기(傳奇)적 성격의 최초 한문 소설집입니다.", 3], ["이인직의 「혈의 누」가 속하는 갈래는?", ["신소설", "고전 소설", "판소리계 소설", "현대 희곡"], "「혈의 누」(1906)는 개화기 신소설의 대표작입니다.", 3], ["김소월의 대표 시집으로 「진달래꽃」이 실린 시집은?", ["진달래꽃", "님의 침묵", "하늘과 바람과 별과 시", "백록담"], "1925년 시집 『진달래꽃』입니다.", 2], ["「님의 침묵」을 지은 시인이자 독립운동가는?", ["한용운", "김소월", "윤동주", "이육사"], "만해 한용운은 3·1운동 민족대표 33인 중 한 명입니다.", 2], ["「서시」, 「별 헤는 밤」을 남긴 시인은?", ["윤동주", "이상", "정지용", "백석"], "윤동주의 유고 시집 『하늘과 바람과 별과 시』에 실려 있습니다.", 2], ["「향수」를 지었으며 감각적 이미지로 유명한 시인은?", ["정지용", "김영랑", "박목월", "조지훈"], "정지용은 선명한 이미지즘 시풍으로 유명합니다.", 3], ["「날개」를 지은 모더니즘 작가는?", ["이상", "채만식", "김유정", "현진건"], "이상의 「날개」는 의식의 흐름 기법으로 유명합니다.", 3], ["「태평천하」, 「탁류」를 지으며 풍자로 유명한 작가는?", ["채만식", "염상섭", "김동인", "황순원"], "채만식은 반어와 풍자의 대가입니다.", 3], ["「삼대」를 지은 사실주의 작가는?", ["염상섭", "이광수", "김유정", "박태원"], "염상섭의 「삼대」는 식민지 세대 갈등을 그린 사실주의 소설입니다.", 3], ["청록파 시인이 아닌 사람은?", ["김수영", "박목월", "조지훈", "박두진"], "청록파는 박목월·조지훈·박두진입니다. 김수영은 참여시인!", 3], ["이야기 속에 또 다른 이야기가 담긴 소설 구성 방식은?", ["액자식 구성", "평면적 구성", "입체적 구성", "옴니버스 구성"], "외화 속에 내화가 들어 있으면 액자식 구성입니다.", 2], ["시간 순서를 바꾸어 사건을 배열하는 구성은?", ["역순행적 구성", "순행적 구성", "액자식 구성", "병렬적 구성"], "현재→과거처럼 시간을 거스르면 역순행적 구성입니다.", 2], ["작품 밖 서술자가 인물의 내면까지 서술하는 시점은?", ["전지적 작가 시점", "3인칭 관찰자 시점", "1인칭 주인공 시점", "1인칭 관찰자 시점"], "전지적 작가 시점은 신처럼 모든 것을 알고 서술합니다.", 2], ["'나'가 다른 인물을 관찰해 전달하는 시점은?", ["1인칭 관찰자 시점", "1인칭 주인공 시점", "전지적 작가 시점", "3인칭 관찰자 시점"], "'나'가 주변 인물이면 1인칭 관찰자 시점입니다.", 2], ["'ㄱ+ㄴ→ㅇ+ㄴ'처럼 '국물'이 [궁물]로 소리 나는 음운 변동은?", ["비음화", "유음화", "구개음화", "된소리되기"], "파열음이 비음을 만나 비음으로 바뀌는 비음화입니다.", 3], ["'신라'가 [실라]로 소리 나는 음운 변동은?", ["유음화", "비음화", "구개음화", "축약"], "ㄴ이 ㄹ의 앞뒤에서 ㄹ로 바뀌는 유음화입니다.", 3], ["'굳이'가 [구지]로 소리 나는 음운 변동은?", ["구개음화", "비음화", "유음화", "탈락"], "ㄷ·ㅌ이 ㅣ 앞에서 ㅈ·ㅊ으로 바뀌는 구개음화입니다.", 3], ["'좋고'가 [조코]로 소리 나는 음운 변동은?", ["축약", "탈락", "교체", "첨가"], "ㅎ과 ㄱ이 만나 ㅋ으로 줄어드는 자음 축약(거센소리되기)입니다.", 3], ["뜻을 가진 가장 작은 말의 단위는?", ["형태소", "음운", "단어", "어절"], "형태소는 의미를 지닌 최소 단위입니다.", 3], ["단어에서 실질적 의미를 나타내는 중심 부분은?", ["어근", "접사", "어미", "조사"], "어근에 접사가 붙어 파생어가 만들어집니다.", 3], ["'풋사과'처럼 접사와 어근이 결합한 단어는?", ["파생어", "합성어", "단일어", "혼성어"], "접두사 '풋-'+어근 '사과' → 파생어입니다.", 3], ["'밤나무'처럼 어근과 어근이 결합한 단어는?", ["합성어", "파생어", "단일어", "약어"], "어근 '밤'+어근 '나무' → 합성어입니다.", 3], ["받침소리가 [ㄱ,ㄴ,ㄷ,ㄹ,ㅁ,ㅂ,ㅇ] 7개로만 발음되는 규칙은?", ["음절의 끝소리 규칙", "두음 법칙", "모음 조화", "사잇소리 현상"], "'잎'이 [입]으로 나는 것이 음절의 끝소리 규칙입니다.", 3], ["'ㄴ,ㄹ'이 단어 첫머리에서 제약을 받는 규칙은?", ["두음 법칙", "유음화", "비음화", "경음화"], "'녀자→여자', '로인→노인'이 두음 법칙의 예입니다.", 3], ["양성 모음은 양성끼리, 음성 모음은 음성끼리 어울리는 현상은?", ["모음 조화", "모음 축약", "이화 현상", "단모음화"], "'찰랑찰랑/철렁철렁'처럼 어울리는 것이 모음 조화입니다.", 3], ["문장에서 목적어(대상)를 높이는 높임법은?", ["객체 높임법", "주체 높임법", "상대 높임법", "압존법"], "'드리다, 모시다, 여쭙다'가 객체 높임의 어휘입니다.", 3], ["듣는 이를 높이거나 낮추는 높임법은?", ["상대 높임법", "주체 높임법", "객체 높임법", "간접 높임"], "'-습니다/-어요/-어' 같은 종결 어미로 실현됩니다.", 3], ["서술어가 주어의 행위를 높이는 '-시-'가 실현하는 높임은?", ["주체 높임법", "객체 높임법", "상대 높임법", "겸양법"], "'선생님께서 오신다'의 '-시-'가 주체 높임입니다.", 2], ["말하는 시점을 기준으로 사건의 앞뒤를 나타내는 문법 범주는?", ["시제", "높임", "피동", "사동"], "과거·현재·미래를 나타내는 것이 시제입니다.", 2], ["겉으로 드러난 상황과 속뜻이 반대되어 웃음을 유발하는 기법은?", ["아이러니(반어)", "알레고리", "패러디", "몽타주"], "기대와 결과의 어긋남이 아이러니입니다.", 2], ["원작을 흉내 내되 비틀어 새로운 의미를 만드는 기법은?", ["패러디", "표절", "오마주", "번안"], "패러디는 원작을 의도적으로 변형해 풍자·창조합니다.", 3], ["추상적 관념을 구체적 사물로 빗대어 나타내는 표현은?", ["상징", "직유", "도치", "반복"], "'비둘기=평화'처럼 원관념이 숨으면 상징입니다.", 2], ["문장 성분의 정상적인 순서를 바꾸어 강조하는 기법은?", ["도치법", "대구법", "점층법", "설의법"], "'보고 싶다, 너의 얼굴'처럼 순서를 바꾸면 도치법입니다.", 2], ["누구나 아는 사실을 의문 형식으로 강조하는 표현법은?", ["설의법", "도치법", "영탄법", "대구법"], "'공든 탑이 무너지랴?'처럼 답을 요구하지 않는 의문이 설의법입니다.", 2], ["비슷한 구조의 구절을 나란히 놓아 운율을 살리는 기법은?", ["대구법", "도치법", "점층법", "반어법"], "'산에는 꽃 피네, 들에는 새 우네'처럼 짝을 이루면 대구법입니다.", 2], ["뜻을 점점 강하고 크게 확대해 가는 표현법은?", ["점층법", "점강법", "억양법", "생략법"], "'하나가 되고, 마을이 되고, 나라가 된다'처럼 커지면 점층법입니다.", 3], ["시에서 같거나 비슷한 소리를 규칙적으로 반복해 만드는 리듬은?", ["운율", "심상", "어조", "정서"], "음보·음수·음운의 반복이 운율을 형성합니다.", 2], ["작품에 나타나는 말하는 이의 태도나 목소리의 특징은?", ["어조", "주제", "소재", "배경"], "애상적 어조, 냉소적 어조처럼 화자의 목소리 결이 어조입니다.", 3], ["문학 작품에서 갈등이 최고조에 이르는 단계는?", ["절정", "발단", "전개", "결말"], "위기를 지나 갈등이 최고조에 달하는 단계가 절정입니다.", 2], ["1920년대 카프(KAPF)가 내세운 문학 경향은?", ["계급주의(프로 문학)", "순수 문학", "모더니즘", "낭만주의"], "카프는 사회주의 계급 문학을 추구한 단체입니다.", 3], ["윤동주 시의 지배적 정서로 가장 알맞은 것은?", ["자기 성찰과 부끄러움", "향락과 퇴폐", "전쟁 찬양", "물질 숭배"], "「서시」의 '부끄럼 없기를'처럼 자기 성찰이 핵심 정서입니다.", 3], ["고전 소설의 일반적 특징이 아닌 것은?", ["입체적 인물과 열린 결말", "권선징악의 주제", "행복한 결말", "전형적 인물"], "고전 소설은 대개 전형적 인물, 행복한 결말, 권선징악이 특징입니다.", 3]], "idiom": [["각주구검(刻舟求劍)", "융통성 없이 낡은 생각을 고집함", 3], ["간담상조(肝膽相照)", "서로 속마음을 터놓고 친하게 사귐", 3], ["견강부회(牽強附會)", "말을 억지로 끌어다 자기 주장에 맞게 함", 3], ["결자해지(結者解之)", "일을 저지른 사람이 해결해야 함", 2], ["결초보은(結草報恩)", "죽어서까지도 은혜를 잊지 않고 갚음", 3], ["계륵(鷄肋)", "버리기는 아깝고 취하자니 쓸모가 적음", 3], ["고육지책(苦肉之策)", "제 몸을 상해 가면서까지 꾸며 내는 계책", 3], ["곡학아세(曲學阿世)", "바른 학문을 굽혀 세상에 아첨함", 3], ["과유불급(過猶不及)", "지나침은 미치지 못함과 같음", 2], ["관포지교(管鮑之交)", "서로 믿고 이해하는 두터운 우정", 3], ["교언영색(巧言令色)", "교묘한 말과 꾸민 얼굴로 아첨함", 3], ["구밀복검(口蜜腹劍)", "입으로는 달콤하나 속으로는 해칠 마음을 품음", 3], ["구우일모(九牛一毛)", "아주 많은 것 가운데 극히 적은 부분", 3], ["군계일학(群鷄一鶴)", "평범한 사람들 가운데 뛰어난 한 사람", 2], ["권모술수(權謀術數)", "목적을 위해 수단을 가리지 않는 온갖 꾀", 3], ["권선징악(勸善懲惡)", "착한 일을 권하고 악한 일을 벌함", 1], ["근묵자흑(近墨者黑)", "나쁜 사람을 가까이하면 물들기 쉬움", 2], ["금상첨화(錦上添花)", "좋은 일 위에 또 좋은 일이 더하여짐", 1], ["기우(杞憂)", "앞일에 대한 쓸데없는 걱정", 3], ["낭중지추(囊中之錐)", "재능이 뛰어난 사람은 저절로 드러남", 3], ["내우외환(內憂外患)", "나라 안팎의 여러 가지 어려움", 3], ["다다익선(多多益善)", "많으면 많을수록 더욱 좋음", 1], ["당랑거철(螳螂拒轍)", "제 분수도 모르고 강한 상대에게 덤빔", 3], ["대기만성(大器晩成)", "크게 될 사람은 늦게 이루어짐", 2], ["동병상련(同病相憐)", "같은 처지의 사람끼리 서로 가엾게 여김", 2], ["두문불출(杜門不出)", "집에만 틀어박혀 밖에 나가지 않음", 2], ["마이동풍(馬耳東風)", "남의 말을 귀담아듣지 않고 흘려버림", 2], ["막역지우(莫逆之友)", "허물없이 아주 친한 벗", 3], ["만시지탄(晩時之歎)", "때늦은 것을 안타까워하는 탄식", 3], ["맹모삼천(孟母三遷)", "교육에는 주변 환경이 중요함", 2], ["면종복배(面從腹背)", "겉으로는 따르는 체하며 속으로는 배반함", 3], ["명약관화(明若觀火)", "불 보듯 뻔하고 분명함", 3], ["목불인견(目不忍見)", "차마 눈 뜨고 볼 수 없는 참혹한 상황", 3], ["문전성시(門前成市)", "찾아오는 사람이 많아 문 앞이 시장 같음", 2], ["미봉책(彌縫策)", "근본 해결이 아닌 임시로 꾸며 대는 대책", 3], ["반포지효(反哺之孝)", "자식이 자라서 부모의 은혜에 보답하는 효성", 3], ["발본색원(拔本塞源)", "폐단의 근원을 완전히 없애 버림", 3], ["백중지세(伯仲之勢)", "서로 우열을 가리기 힘든 형세", 3], ["부지기수(不知其數)", "헤아릴 수 없을 만큼 많음", 2], ["분골쇄신(粉骨碎身)", "뼈가 가루가 되도록 온 힘을 다함", 2], ["사면초가(四面楚歌)", "사방이 적으로 둘러싸인 고립된 처지", 2], ["사족(蛇足)", "쓸데없이 덧붙여 도리어 잘못되게 함", 3], ["새옹지마(塞翁之馬)", "인생의 길흉화복은 예측하기 어려움", 2], ["선견지명(先見之明)", "앞일을 미리 내다보는 밝은 지혜", 2], ["설상가상(雪上加霜)", "불행한 일이 잇따라 일어남", 1], ["수구초심(首丘初心)", "고향을 그리워하는 마음", 3], ["순망치한(脣亡齒寒)", "서로 의지하던 한쪽이 망하면 다른 쪽도 위태로움", 3], ["식언(食言)", "약속한 말을 지키지 않음", 3], ["십시일반(十匙一飯)", "여럿이 조금씩 힘을 합하면 한 사람을 돕기 쉬움", 2], ["아전인수(我田引水)", "자기에게만 이롭게 되도록 생각하거나 행동함", 3], ["안하무인(眼下無人)", "교만하여 남을 업신여김", 2], ["양두구육(羊頭狗肉)", "겉은 그럴듯하나 속은 변변치 않음", 3], ["어부지리(漁夫之利)", "둘이 다투는 사이에 엉뚱한 제삼자가 이익을 봄", 2], ["오리무중(五里霧中)", "일의 갈피를 잡을 수 없음", 2], ["오월동주(吳越同舟)", "서로 미워하면서도 공동의 어려움 앞에 협력함", 3], ["우공이산(愚公移山)", "꾸준히 노력하면 반드시 이루어짐", 2], ["유비무환(有備無患)", "미리 준비하면 근심할 것이 없음", 1], ["유유상종(類類相從)", "같은 무리끼리 서로 어울림", 2], ["읍참마속(泣斬馬謖)", "대의를 위해 아끼는 사람도 법대로 처단함", 3], ["이심전심(以心傳心)", "말하지 않아도 마음이 서로 통함", 1], ["이전투구(泥田鬪狗)", "자기 이익을 위해 볼썽사납게 다툼", 3], ["일벌백계(一罰百戒)", "한 사람을 벌주어 여러 사람에게 경각심을 줌", 3], ["일취월장(日就月將)", "나날이 다달이 자라거나 발전함", 2], ["임기응변(臨機應變)", "그때그때 형편에 맞게 일을 처리함", 2], ["자가당착(自家撞着)", "자기의 말과 행동이 앞뒤가 서로 맞지 않음", 3], ["자업자득(自業自得)", "자기가 저지른 일의 결과를 자기가 받음", 1], ["전화위복(轉禍爲福)", "재앙이 바뀌어 오히려 복이 됨", 2], ["절차탁마(切磋琢磨)", "학문과 인격을 갈고닦음", 3], ["점입가경(漸入佳境)", "갈수록 더욱 흥미로워지거나 꼴불견이 됨", 3], ["조삼모사(朝三暮四)", "눈앞의 차이만 알고 결과가 같음을 모르는 어리석음", 2], ["주마간산(走馬看山)", "자세히 살피지 않고 대충대충 보고 지나감", 3], ["지록위마(指鹿爲馬)", "윗사람을 농락하여 권세를 마음대로 함", 3], ["천려일실(千慮一失)", "슬기로운 사람도 많은 생각 가운데 실수가 있음", 3], ["청출어람(靑出於藍)", "제자가 스승보다 나음", 2], ["촌철살인(寸鐵殺人)", "짧은 말로 핵심을 찔러 감동시킴", 3], ["타산지석(他山之石)", "남의 하찮은 언행도 자기 수양에 도움이 됨", 2], ["토사구팽(兎死狗烹)", "쓸모가 없어지면 가혹하게 버려짐", 3], ["파죽지세(破竹之勢)", "거침없이 맹렬하게 나아가는 기세", 2], ["풍전등화(風前燈火)", "매우 위태로운 처지", 2], ["함흥차사(咸興差使)", "심부름 간 사람이 소식이 없거나 회답이 늦음", 3], ["형설지공(螢雪之功)", "고생하면서도 꾸준히 공부하여 얻은 보람", 2], ["호사다마(好事多魔)", "좋은 일에는 방해되는 일이 많음", 2], ["환골탈태(換骨奪胎)", "모습이나 상태가 몰라보게 새로워짐", 3], ["후안무치(厚顏無恥)", "뻔뻔스러워 부끄러움이 없음", 2]], "prov": [["가는 날이", "장날", "뜻하지 않은 일이 공교롭게 겹침", 2], ["고래 싸움에", "새우 등 터진다", "강자들의 싸움에 약자가 피해를 봄", 2], ["공든 탑이", "무너지랴", "정성을 다한 일은 헛되지 않음", 2], ["구슬이 서 말이라도", "꿰어야 보배", "아무리 좋은 것도 다듬어 완성해야 가치가 있음", 2], ["낫 놓고", "기역 자도 모른다", "아주 무식함", 2], ["누워서", "침 뱉기", "남을 해치려다 도리어 자기가 해를 입음", 2], ["될성부른 나무는", "떡잎부터 알아본다", "잘될 사람은 어려서부터 남다름", 2], ["마른하늘에", "날벼락", "뜻하지 않게 당하는 재난", 1], ["목마른 놈이", "우물 판다", "급하고 아쉬운 사람이 서둘러 일을 시작함", 2], ["바늘 도둑이", "소도둑 된다", "작은 나쁜 짓도 버릇이 되면 큰 죄를 저지르게 됨", 1], ["배보다", "배꼽이 더 크다", "기본보다 덧붙은 것이 더 많거나 큼", 1], ["뱁새가 황새를 따라가면", "다리가 찢어진다", "분수에 넘치게 남을 따라 하면 낭패를 봄", 2], ["서당 개 삼 년이면", "풍월을 읊는다", "어떤 분야에 오래 있으면 얼마간 지식이 생김", 2], ["아니 땐 굴뚝에", "연기 날까", "원인이 없으면 결과도 없음", 1], ["열 길 물속은 알아도", "한 길 사람 속은 모른다", "사람의 속마음은 알기 어려움", 2], ["우물 안", "개구리", "견문이 좁아 넓은 세상을 모르는 사람", 1], ["입에 쓴 약이", "병에는 좋다", "충고는 듣기 싫지만 도움이 됨", 2], ["첫술에", "배부르랴", "무슨 일이든 단번에 만족할 수는 없음", 2], ["하늘이 무너져도", "솟아날 구멍이 있다", "아무리 어려워도 해결할 길은 있음", 1], ["호랑이도", "제 말 하면 온다", "이야기하던 바로 그 사람이 마침 나타남", 1], ["호미로 막을 것을", "가래로 막는다", "일을 미리 처리하지 않아 나중에 큰 힘을 들임", 3], ["믿는 도끼에", "발등 찍힌다", "믿던 사람에게 오히려 배신을 당함", 1], ["사공이 많으면", "배가 산으로 간다", "주관하는 사람이 많으면 일이 엉뚱하게 됨", 2], ["닭 쫓던 개", "지붕 쳐다본다", "애쓰던 일이 실패하여 어찌할 도리가 없음", 2], ["개천에서", "용 난다", "변변찮은 환경에서 훌륭한 인물이 나옴", 1]], "expr": [["오지랖이 넓다", "쓸데없이 남의 일에 참견을 잘하다", 2], ["변죽을 울리다", "바로 말하지 않고 둘러서 말해 짐작하게 하다", 3], ["등골이 빠지다", "견디기 어려울 만큼 몹시 고생하다", 2], ["딴죽을 걸다", "동의했던 일을 딴전을 부리며 방해하다", 3], ["배수진을 치다", "물러설 수 없다는 각오로 임하다", 3], ["쐐기를 박다", "뒤탈이 없도록 확실하게 다짐을 해 두다", 3], ["못을 박다", "마음에 상처를 주다, 또는 단정 지어 말하다", 2], ["서슬이 퍼렇다", "권세나 기세가 몹시 매섭다", 3], ["각광을 받다", "사회적으로 주목을 받다", 2], ["물의를 빚다", "말썽을 일으켜 시비 거리가 되다", 3], ["오리발을 내밀다", "잘못을 저지르고 시치미를 떼다", 2], ["트집을 잡다", "공연히 조그만 흠집을 들추어 문제 삼다", 2], ["발목을 잡다", "일의 진행을 방해하다, 또는 약점을 잡다", 2], ["손사래를 치다", "거절하거나 부인하며 손을 내젓다", 2], ["어깃장을 놓다", "일부러 반대되는 행동으로 훼방을 놓다", 3]], "enw": {"수능 어휘 1": [["abolish", "폐지하다"], ["abundant", "풍부한"], ["accelerate", "가속하다"], ["accommodate", "수용하다"], ["accumulate", "축적하다"], ["adhere", "고수하다, 들러붙다"], ["adjacent", "인접한"], ["advocate", "옹호하다; 지지자"], ["aesthetic", "미적인, 심미적인"], ["aggregate", "총계; 종합하다"], ["allocate", "할당하다"], ["alleviate", "완화하다"], ["ambiguous", "모호한"], ["ample", "충분한, 넉넉한"], ["analogy", "유추, 비유"], ["anonymous", "익명의"], ["apparatus", "기구, 장치"], ["arbitrary", "임의적인, 독단적인"], ["articulate", "분명히 표현하다"], ["assert", "단언하다, 주장하다"], ["attain", "달성하다"], ["attribute", "~의 탓으로 돌리다; 속성"], ["autonomy", "자율성"], ["bias", "편견"], ["breakthrough", "돌파구, 획기적 발견"], ["candid", "솔직한"], ["cease", "중단하다"], ["coherent", "일관성 있는"], ["coincide", "동시에 일어나다, 일치하다"], ["collapse", "붕괴하다"], ["commodity", "상품, 물품"], ["compensate", "보상하다"], ["compile", "편집하다, 모으다"], ["comply", "(규칙을) 따르다"], ["comprehensive", "포괄적인"], ["compromise", "타협하다; 훼손하다"], ["conceive", "생각해 내다, 상상하다"], ["condense", "응축하다, 요약하다"], ["confine", "제한하다, 가두다"], ["conform", "순응하다"], ["consensus", "합의, 여론"], ["conspicuous", "눈에 띄는"], ["constrain", "제약하다"], ["contradict", "모순되다, 반박하다"], ["controversial", "논란이 많은"], ["converge", "한데 모이다, 수렴하다"], ["convey", "전달하다"], ["correlate", "상관관계가 있다"], ["credible", "믿을 만한"], ["crucial", "결정적인"], ["cumulative", "누적되는"], ["deficient", "부족한, 결핍된"], ["deliberate", "고의적인; 숙고하다"], ["denounce", "비난하다, 고발하다"], ["depict", "묘사하다"], ["deprive", "박탈하다"], ["deteriorate", "악화되다"], ["deviate", "벗어나다, 일탈하다"], ["diminish", "줄어들다"], ["discard", "버리다, 폐기하다"], ["discern", "식별하다, 분간하다"], ["disperse", "흩어지다, 분산시키다"], ["disrupt", "방해하다, 지장을 주다"], ["distort", "왜곡하다"], ["diverge", "갈라지다, 나뉘다"], ["dwell", "거주하다, 머무르다"], ["elaborate", "정교한; 자세히 설명하다"], ["elicit", "이끌어 내다"], ["embody", "구현하다"], ["empirical", "경험적인, 실증적인"], ["endeavor", "노력하다; 노력"], ["endorse", "지지하다, 승인하다"], ["enhance", "향상시키다"], ["entail", "수반하다"], ["equilibrium", "평형, 균형"], ["erode", "침식하다, 약화시키다"], ["evoke", "불러일으키다"], ["exceed", "초과하다"], ["exert", "(힘을) 발휘하다, 쓰다"], ["exempt", "면제된"], ["exploit", "이용하다, 착취하다"], ["extract", "추출하다"], ["facilitate", "촉진하다, 용이하게 하다"], ["fluctuate", "변동하다"], ["formulate", "(체계적으로) 만들다"], ["foster", "조성하다, 육성하다"], ["fragile", "깨지기 쉬운, 취약한"], ["fulfill", "이행하다, 성취하다"], ["hinder", "방해하다"], ["hypothesis", "가설"], ["illuminate", "밝히다, 조명하다"], ["impair", "손상시키다"], ["impose", "부과하다, 강요하다"], ["incentive", "동기, 유인책"], ["inclination", "성향, 경향"], ["incorporate", "포함하다, 통합하다"], ["indispensable", "없어서는 안 될"], ["induce", "유도하다, 유발하다"], ["inherent", "내재하는, 타고난"], ["initiate", "시작하다, 착수하다"]], "수능 어휘 2": [["innate", "선천적인"], ["innovative", "혁신적인"], ["insight", "통찰력"], ["integrate", "통합하다"], ["integrity", "진실성, 온전함"], ["intervene", "개입하다"], ["intricate", "복잡한, 정교한"], ["intrinsic", "본질적인, 고유한"], ["intuitive", "직관적인"], ["invaluable", "매우 귀중한"], ["irrelevant", "무관한"], ["isolate", "고립시키다, 분리하다"], ["legitimate", "정당한, 합법적인"], ["magnitude", "규모, 중요도"], ["mandatory", "의무적인"], ["manipulate", "조작하다, 교묘히 다루다"], ["marginal", "미미한, 주변적인"], ["mediate", "중재하다"], ["merge", "합병하다, 융합하다"], ["meticulous", "꼼꼼한, 세심한"], ["migrate", "이주하다"], ["mitigate", "(고통·심각성을) 누그러뜨리다"], ["monotonous", "단조로운"], ["mutual", "상호의"], ["negligible", "무시해도 될 정도의"], ["notion", "개념, 관념"], ["nurture", "양육하다; 양육"], ["obscure", "모호한; 가리다"], ["optimal", "최적의"], ["outweigh", "~보다 중요하다"], ["overlap", "겹치다"], ["paradigm", "패러다임, 인식의 틀"], ["paradox", "역설"], ["persist", "지속되다, 고집하다"], ["pervasive", "널리 퍼진, 만연한"], ["plausible", "그럴듯한, 타당한"], ["postulate", "가정하다"], ["precede", "~에 앞서다"], ["precise", "정확한"], ["predominant", "지배적인, 우세한"], ["preliminary", "예비의"], ["prevail", "우세하다, 만연하다"], ["profound", "심오한, 깊은"], ["prohibit", "금지하다"], ["prominent", "저명한, 두드러진"], ["propel", "추진하다, 나아가게 하다"], ["proponent", "지지자"], ["prosper", "번영하다"], ["provoke", "유발하다, 도발하다"], ["proximity", "근접, 가까움"], ["radical", "급진적인, 근본적인"], ["reciprocal", "상호적인, 호혜적인"], ["refine", "정제하다, 다듬다"], ["refute", "반박하다"], ["regulate", "규제하다, 조절하다"], ["reinforce", "강화하다"], ["reluctant", "꺼리는, 주저하는"], ["render", "~하게 만들다; 표현하다"], ["replicate", "복제하다, 반복 재현하다"], ["resemble", "닮다"], ["resilient", "회복력 있는"], ["restrain", "억제하다"], ["retain", "유지하다, 보유하다"], ["retrieve", "되찾다, 검색하다"], ["reveal", "드러내다"], ["rigid", "경직된, 엄격한"], ["rigorous", "엄격한, 철저한"], ["robust", "튼튼한, 강건한"], ["scarce", "부족한, 희소한"], ["scrutiny", "면밀한 조사"], ["simultaneous", "동시의"], ["skeptical", "회의적인"], ["sophisticated", "정교한, 세련된"], ["spontaneous", "자발적인, 즉흥적인"], ["stagnant", "정체된"], ["static", "정적인, 고정된"], ["stimulus", "자극"], ["subsequent", "그 이후의"], ["subtle", "미묘한"], ["succumb", "굴복하다"], ["superficial", "피상적인"], ["supplement", "보충하다; 보충물"], ["suppress", "억압하다, 억제하다"], ["sustain", "지속하다, 유지하다"], ["tangible", "실체가 있는, 유형의"], ["tedious", "지루한"], ["terminate", "종료하다"], ["threshold", "문턱, 한계점"], ["trait", "특성, 형질"], ["transcend", "초월하다"], ["transmit", "전달하다, 전송하다"], ["trivial", "사소한"], ["undergo", "겪다"], ["undermine", "약화시키다"], ["unify", "하나로 통일하다"], ["utilize", "활용하다"], ["validate", "입증하다, 유효하게 하다"], ["versatile", "다재다능한, 다용도의"], ["viable", "실행 가능한"], ["vulnerable", "취약한"]], "수능 어휘 3": [["adverse", "부정적인, 불리한"], ["affluent", "부유한"], ["align", "나란히 하다, 조정하다"], ["altruistic", "이타적인"], ["amend", "수정하다"], ["anomaly", "이례적인 것, 변칙"], ["appraise", "평가하다"], ["apprehend", "이해하다; 체포하다"], ["ascribe", "~의 탓으로 돌리다"], ["aspire", "열망하다"], ["assimilate", "동화되다, 흡수하다"], ["augment", "증대시키다"], ["authentic", "진짜의, 진정한"], ["benevolent", "자비로운, 인정 많은"], ["cognitive", "인지의"], ["commence", "시작하다"], ["commend", "칭찬하다, 추천하다"], ["compelling", "설득력 있는, 강렬한"], ["complement", "보완하다"], ["comprise", "구성되다"], ["conceal", "숨기다"], ["concede", "인정하다, 양보하다"], ["conducive", "도움이 되는"], ["confront", "직면하다"], ["congestion", "혼잡, 정체"], ["consecutive", "연속적인"], ["consolidate", "통합하다, 공고히 하다"], ["contaminate", "오염시키다"], ["contemplate", "숙고하다"], ["contempt", "경멸"], ["contingent", "~에 달려 있는; 우발적인"], ["conventional", "전통적인, 관습적인"], ["cope", "대처하다"], ["curb", "(증가를) 억제하다, 제한하다"], ["decisive", "결단력 있는, 결정적인"], ["degrade", "저하시키다, 격하하다"], ["delegate", "위임하다; 대표자"], ["denote", "나타내다, 의미하다"], ["deplete", "고갈시키다"], ["designate", "지정하다"], ["detrimental", "해로운"], ["dictate", "좌우하다; 받아쓰게 하다"], ["differentiate", "구별하다"], ["dilemma", "딜레마, 진퇴양난"], ["diligent", "성실한, 근면한"], ["discrete", "별개의, 분리된"], ["discretion", "재량, 신중함"], ["disparity", "격차, 불균형"], ["dispose", "처리하다, 배치하다"], ["dissolve", "용해하다, 해산하다"], ["divert", "방향을 바꾸다, 전환하다"], ["dominant", "우세한, 지배적인"], ["duplicate", "복제하다"], ["eloquent", "웅변의, 유창한"], ["embrace", "포용하다, 받아들이다"], ["emit", "방출하다"], ["encompass", "포함하다, 아우르다"], ["enduring", "지속되는"], ["enforce", "시행하다, 집행하다"], ["enrich", "풍요롭게 하다"], ["ethical", "윤리적인"], ["evade", "회피하다"], ["exacerbate", "악화시키다"], ["excel", "뛰어나다"], ["excessive", "과도한"], ["explicit", "명시적인, 분명한"], ["extinct", "멸종된"], ["feasible", "실현 가능한"], ["fertile", "비옥한, 생산적인"], ["flourish", "번성하다"], ["forecast", "예측하다"], ["fraud", "사기"], ["frugal", "검소한"], ["generic", "일반적인, 포괄적인"], ["genome", "게놈, 유전체"], ["gratify", "만족시키다"], ["hierarchy", "위계, 계층"], ["ignite", "점화하다, 불붙이다"], ["immerse", "몰입시키다, 담그다"], ["imminent", "임박한"], ["impartial", "공정한"], ["implement", "시행하다; 도구"], ["implicit", "암시적인, 내포된"], ["incline", "기울다, 마음이 쏠리다"], ["incur", "초래하다, 발생시키다"], ["inevitably", "불가피하게"], ["infrastructure", "기반 시설"], ["ingenious", "독창적인, 기발한"], ["inhibit", "(작용을) 저해하다"], ["insulate", "단열하다, 격리하다"], ["interfere", "간섭하다, 방해하다"], ["intimidate", "위협하다"], ["lucrative", "수익성 있는"], ["nostalgia", "향수, 그리움"], ["obsolete", "한물간, 구식의"], ["perceive", "인식하다, 지각하다"], ["perpetual", "영구적인, 끊임없는"], ["reconcile", "화해시키다, 조화시키다"], ["speculate", "추측하다; 투기하다"], ["synthesize", "종합하다, 합성하다"]]}, "eni": [["account for", "설명하다; 차지하다", 3], ["adhere to", "고수하다, 준수하다", 3], ["at the expense of", "~을 희생하여", 3], ["be attributed to", "~의 탓으로 여겨지다", 3], ["be bound to", "반드시 ~하게 되어 있다", 3], ["be subject to", "~의 영향을 받기 쉽다", 3], ["boil down to", "결국 ~로 귀결되다", 3], ["bring about", "야기하다, 초래하다", 2], ["by virtue of", "~ 덕분에", 3], ["call for", "요구하다, 필요로 하다", 2], ["carry out", "수행하다", 2], ["come down to", "결국 ~에 달려 있다", 3], ["compensate for", "~을 보상하다", 2], ["cope with", "~에 대처하다", 2], ["cut down on", "~을 줄이다", 2], ["do away with", "~을 없애다, 폐지하다", 3], ["draw on", "~을 활용하다, 이용하다", 3], ["fall short of", "~에 미치지 못하다", 3], ["give rise to", "~을 일으키다", 3], ["go hand in hand with", "~와 밀접히 관련되다", 3], ["in accordance with", "~에 따라", 3], ["in light of", "~에 비추어", 3], ["in terms of", "~의 관점에서", 2], ["in the long run", "장기적으로 보면", 2], ["keep track of", "~을 계속 파악하다", 2], ["lead to", "~로 이어지다", 1], ["let alone", "~은 말할 것도 없이", 3], ["live up to", "(기대에) 부응하다", 3], ["look into", "조사하다", 2], ["make sense of", "~을 이해하다", 2], ["make up for", "보충하다, 만회하다", 2], ["no less than", "~만큼이나, 자그마치", 3], ["on behalf of", "~을 대신하여, 대표하여", 3], ["on the grounds that", "~라는 근거로", 3], ["opt for", "~을 선택하다", 3], ["pave the way for", "~의 길을 열다", 3], ["put up with", "~을 참다", 2], ["refrain from", "~을 삼가다", 3], ["resort to", "~에 의지하다, 호소하다", 3], ["result in", "(결과적으로) ~을 낳다", 2], ["rule out", "배제하다", 2], ["set aside", "따로 떼어 두다; 제쳐 두다", 2], ["stand for", "상징하다, 나타내다", 2], ["stem from", "~에서 비롯되다", 3], ["take a toll on", "~에 피해를 주다", 3], ["take for granted", "당연하게 여기다", 2], ["take into account", "고려하다", 2], ["turn out", "~로 판명되다", 2], ["when it comes to", "~에 관해서라면", 2], ["with regard to", "~에 관하여", 3]], "hist": [["고조선의 세력 범위를 짐작하게 하는 유물로 알맞은 것은?", ["비파형 동검", "빗살무늬 토기", "주먹도끼", "금동대향로"], "비파형 동검과 탁자식 고인돌의 분포로 고조선의 세력 범위를 추정합니다.", 3], ["부여의 제천 행사는?", ["영고", "동맹", "무천", "계절제"], "부여는 영고, 고구려는 동맹, 동예는 무천입니다.", 3], ["고구려의 제천 행사는?", ["동맹", "영고", "무천", "수릿날"], "고구려는 10월에 동맹이라는 제천 행사를 열었습니다.", 3], ["동예의 풍습으로, 다른 부족의 영역을 침범하면 배상하게 한 제도는?", ["책화", "서옥제", "형사취수제", "골품제"], "책화는 동예의 읍락 간 경계를 중시한 풍습입니다.", 3], ["고구려의 데릴사위제 성격을 지닌 혼인 풍습은?", ["서옥제", "민며느리제", "책화", "순장"], "서옥제는 고구려, 민며느리제는 옥저의 혼인 풍습입니다.", 3], ["신라에서 혈통에 따라 관직 승진과 생활을 규제한 제도는?", ["골품제", "화백회의", "독서삼품과", "상수리 제도"], "골품제는 신라 사회의 폐쇄적 신분 제도입니다.", 2], ["신라의 만장일치 귀족 회의는?", ["화백회의", "정사암회의", "제가회의", "도병마사"], "신라 화백, 백제 정사암, 고구려 제가회의입니다.", 3], ["고구려 소수림왕이 인재 양성을 위해 세운 교육 기관은?", ["태학", "국자감", "성균관", "주자감"], "372년 소수림왕은 태학을 설립하고 불교를 수용했습니다.", 3], ["백제가 중국 남조와 교류했음을 보여 주는 벽돌무덤은?", ["무령왕릉", "천마총", "장군총", "석굴암"], "무령왕릉은 중국 남조의 영향을 받은 벽돌무덤입니다.", 3], ["신라 지증왕 때 우산국을 정복한 장군은?", ["이사부", "김유신", "거칠부", "김춘추"], "512년 이사부가 우산국(울릉도)을 복속시켰습니다.", 3], ["통일신라에서 지방 세력을 견제하기 위해 시행한 제도는?", ["상수리 제도", "기인 제도", "사심관 제도", "향리 제도"], "통일신라는 상수리, 고려는 기인·사심관 제도를 두었습니다.", 3], ["통일신라 신문왕이 귀족의 경제 기반을 약화하려 폐지한 것은?", ["녹읍", "정전", "관료전", "전시과"], "신문왕은 관료전을 지급하고 녹읍을 폐지했습니다.", 3], ["원효가 불교 대중화를 위해 주장한 사상은?", ["일심 사상과 아미타 신앙", "교관겸수", "선교 일치", "돈오점수"], "원효는 '나무아미타불'을 통한 불교 대중화에 힘썼습니다.", 3], ["당에서 유학하고 화엄 사상을 정립한 통일신라의 승려는?", ["의상", "원효", "혜초", "자장"], "의상은 화엄일승법계도를 지어 화엄종을 세웠습니다.", 3], ["인도와 중앙아시아를 순례하고 「왕오천축국전」을 남긴 승려는?", ["혜초", "의상", "원효", "일연"], "혜초의 왕오천축국전은 8세기 여행 기록입니다.", 3], ["고려 태조 왕건이 후대 왕에게 남긴 통치 지침은?", ["훈요 10조", "시무 28조", "교정도감", "최승로의 상소"], "훈요 10조는 왕건이 남긴 열 가지 유훈입니다.", 2], ["고려 성종에게 시무 28조를 올려 유교 정치를 건의한 인물은?", ["최승로", "최치원", "정도전", "김부식"], "최승로의 시무 28조로 유교적 통치 체제가 정비되었습니다.", 3], ["고려 시대 국방과 군사 문제를 논의한 최고 회의 기구는?", ["도병마사", "중추원", "어사대", "삼사"], "도병마사는 재신과 추밀이 모여 국방 문제를 논의했습니다.", 3], ["묘청 등이 서경 천도를 주장하며 일으킨 사건은?", ["묘청의 서경 천도 운동", "이자겸의 난", "무신정변", "만적의 난"], "1135년 묘청 세력이 서경 천도와 칭제건원을 주장했습니다.", 3], ["1170년 무신들이 정권을 잡은 사건은?", ["무신정변", "이자겸의 난", "위화도 회군", "임술 농민 봉기"], "정중부 등이 일으킨 무신정변으로 무신 정권이 시작되었습니다.", 3], ["최충헌이 설치한 무신 정권의 최고 권력 기구는?", ["교정도감", "정방", "삼별초", "도방"], "교정도감은 최씨 정권의 최고 정치 기구입니다.", 3], ["'왕후장상의 씨가 따로 있느냐'며 봉기를 꾀한 노비는?", ["만적", "망이", "김사미", "효심"], "1198년 최충헌의 사노 만적이 신분 해방을 주장했습니다.", 3], ["일연이 지어 단군 신화를 수록한 고려 시대 역사서는?", ["삼국유사", "삼국사기", "제왕운기", "동국통감"], "일연의 삼국유사에 단군 신화가 전합니다.", 2], ["김부식이 편찬한 현존 최고(最古)의 역사서는?", ["삼국사기", "삼국유사", "고려사", "동사강목"], "1145년 김부식의 삼국사기는 기전체 정사입니다.", 3], ["현존하는 세계 최고(最古)의 금속 활자 인쇄본은?", ["직지심체요절", "무구정광대다라니경", "팔만대장경", "조선왕조실록"], "1377년 청주 흥덕사에서 간행된 직지심체요절입니다.", 2], ["고려의 토지 제도로 관리에게 전지와 시지를 지급한 제도는?", ["전시과", "과전법", "녹읍", "균역법"], "고려는 전시과, 조선은 과전법을 시행했습니다.", 3], ["조선의 통치 이념으로 채택된 사상은?", ["성리학", "불교", "도교", "실학"], "조선은 성리학을 국가 통치 이념으로 삼았습니다.", 2], ["정도전이 재상 중심의 정치를 주장하며 지은 책은?", ["조선경국전", "경국대전", "목민심서", "성학집요"], "정도전은 조선경국전에서 재상 중심 정치를 제시했습니다.", 3], ["조선 시대 왕의 잘못을 논하고 관리를 감찰한 삼사가 아닌 것은?", ["의금부", "사헌부", "사간원", "홍문관"], "삼사는 사헌부·사간원·홍문관이며, 의금부는 국왕 직속 사법 기구입니다.", 3], ["세종 때 만들어진 우리 실정에 맞는 역법서는?", ["칠정산", "향약집성방", "농사직설", "동의보감"], "칠정산은 한양을 기준으로 한 역법서입니다.", 3], ["세종 때 우리 풍토에 맞는 농법을 정리한 책은?", ["농사직설", "농가집성", "임원경제지", "산림경제"], "농사직설은 우리 농민의 경험을 모아 편찬했습니다.", 3], ["연산군 때부터 반복된 사림과 훈구의 정치적 충돌은?", ["사화", "환국", "예송", "붕당 정치의 시작"], "무오·갑자·기묘·을사사화가 대표적입니다.", 3], ["조광조가 추진한 개혁 정책이 아닌 것은?", ["대동법 실시", "현량과 실시", "위훈 삭제", "소격서 폐지"], "대동법은 광해군 때 시작된 조세 개혁입니다.", 3], ["임진왜란 중 조선이 만든 화약 무기 발사 기구는?", ["신기전(화차)", "박격포", "기관총", "수류탄"], "신기전과 화차는 임진왜란에서 활약한 조선의 화약 무기입니다.", 3], ["공납의 폐단을 개선하고자 토지 결수에 따라 쌀로 걷은 제도는?", ["대동법", "균역법", "영정법", "호포법"], "광해군 때 경기도에서 시작해 숙종 때 전국으로 확대되었습니다.", 3], ["영조가 군포 부담을 2필에서 1필로 줄인 제도는?", ["균역법", "대동법", "영정법", "호패법"], "균역법으로 농민의 군역 부담을 덜어 주었습니다.", 3], ["인조 때 전세를 토지 1결당 4~6두로 고정한 제도는?", ["영정법", "대동법", "균역법", "연분9등법"], "영정법은 풍흉에 관계없이 전세를 고정했습니다.", 3], ["조선 후기 상품 화폐 경제 발달과 함께 널리 유통된 화폐는?", ["상평통보", "건원중보", "해동통보", "백동화"], "숙종 때 상평통보가 전국적으로 유통되었습니다.", 3], ["「양반전」, 「허생전」을 지은 북학파 실학자는?", ["박지원", "정약용", "유형원", "이익"], "연암 박지원은 열하일기와 한문 소설로 유명합니다.", 3], ["수원 화성 축조에 사용된 정약용이 고안한 기구는?", ["거중기", "자격루", "측우기", "앙부일구"], "거중기로 무거운 돌을 들어 올려 공사 기간을 단축했습니다.", 2], ["조선 후기 서민이 복을 빌며 생활 공간을 장식한 이름 없는 그림은?", ["민화", "진경산수화", "문인화", "초상화"], "민화는 서민의 소망을 담아 생활 공간을 장식했습니다.", 2], ["우리 산천을 직접 보고 그린 조선 후기 회화 양식은?", ["진경산수화", "민화", "풍속화", "문인화"], "정선의 인왕제색도가 대표적인 진경산수화입니다.", 3], ["1866년 프랑스가 강화도를 침입한 사건은?", ["병인양요", "신미양요", "운요호 사건", "제너럴셔먼호 사건"], "병인박해를 구실로 프랑스가 침입해 외규장각 도서를 약탈했습니다.", 3], ["1871년 미국이 강화도를 침입한 사건은?", ["신미양요", "병인양요", "운요호 사건", "갑신정변"], "제너럴셔먼호 사건을 구실로 미군이 침입했습니다.", 3], ["1882년 구식 군인들이 차별에 반발해 일으킨 사건은?", ["임오군란", "갑신정변", "을미사변", "동학농민운동"], "신식 군대 별기군과의 차별 대우가 원인이었습니다.", 3], ["1894년 갑오개혁의 내용으로 알맞은 것은?", ["신분제 폐지", "대한제국 수립", "을사늑약 체결", "토지 조사 사업"], "갑오개혁으로 신분제와 과거제가 폐지되었습니다.", 3], ["독립협회가 자주 국권 운동을 위해 개최한 집회는?", ["만민공동회", "국채보상운동", "물산장려운동", "브나로드 운동"], "만민공동회는 근대적 민중 집회였습니다.", 3], ["1897년 고종이 황제로 즉위하며 선포한 국호는?", ["대한제국", "조선", "대한민국", "고려"], "환구단에서 황제 즉위식을 하고 대한제국을 선포했습니다.", 2], ["일제가 1912년부터 실시해 토지를 약탈한 정책은?", ["토지 조사 사업", "산미 증식 계획", "회사령", "국가 총동원법"], "신고주의를 악용해 많은 토지를 총독부가 차지했습니다.", 3], ["3·1운동이 일어난 해는?", ["1919년", "1910년", "1920년", "1929년"], "1919년 3월 1일 전국적 만세 운동이 일어났습니다.", 1], ["1920년대 일제가 실시한 통치 방식은?", ["문화 통치", "무단 통치", "민족 말살 통치", "병참 기지화"], "3·1운동 이후 이른바 문화 통치로 전환했습니다.", 3], ["'내 살림 내 것으로'를 내건 1920년대 경제 운동은?", ["물산장려운동", "국채보상운동", "브나로드 운동", "형평 운동"], "조만식 등이 주도한 국산품 애용 운동입니다.", 3], ["백정에 대한 차별 철폐를 주장한 1923년의 운동은?", ["형평 운동", "물산장려운동", "6·10만세운동", "광주학생항일운동"], "조선형평사가 신분 차별 철폐를 주장했습니다.", 3], ["1927년 민족주의와 사회주의 세력이 연합해 만든 단체는?", ["신간회", "독립협회", "신민회", "한인애국단"], "신간회는 민족 유일당 운동의 결실입니다.", 3], ["김구가 조직해 이봉창·윤봉길 의거를 이끈 단체는?", ["한인애국단", "의열단", "신민회", "광복군"], "1931년 김구가 상하이에서 조직했습니다.", 3], ["김원봉이 조직해 의열 투쟁을 전개한 단체는?", ["의열단", "한인애국단", "독립의군부", "대한광복회"], "1919년 만주에서 조직된 의열단입니다.", 3], ["대한민국 임시정부가 1940년에 창설한 정규군은?", ["한국광복군", "조선의용대", "독립군", "별기군"], "충칭에서 한국광복군을 창설했습니다.", 3], ["1948년 제헌 국회가 친일 행위자를 처벌하려 만든 기구는?", ["반민특위", "진실화해위원회", "군정청", "임시정부"], "반민족행위특별조사위원회(반민특위)입니다.", 3], ["6·25 전쟁의 전세를 뒤바꾼 1950년 9월의 작전은?", ["인천 상륙 작전", "흥남 철수", "다부동 전투", "정전 협정"], "맥아더의 인천 상륙 작전으로 서울을 수복했습니다.", 2], ["1953년 체결된 6·25 전쟁의 종료 협정은?", ["정전 협정", "강화 조약", "제네바 합의", "한미상호방위조약"], "1953년 7월 27일 정전 협정이 체결되었습니다.", 3], ["1972년 남북이 자주·평화·민족 대단결 원칙에 합의한 성명은?", ["7·4 남북공동성명", "6·15 남북공동선언", "10·4 선언", "판문점 선언"], "1972년 7·4 남북공동성명입니다.", 3], ["박정희 정부가 1972년 선포해 장기 집권을 꾀한 체제는?", ["유신 체제", "제3공화국", "군정", "계엄 통치"], "유신 헌법으로 대통령 권한이 대폭 강화되었습니다.", 3], ["1987년 6월 민주항쟁의 결과 이루어진 개헌 내용은?", ["대통령 직선제", "내각제 전환", "중선거구제", "지방자치 폐지"], "6·29 선언으로 대통령 직선제 개헌이 이뤄졌습니다.", 3], ["1997년 우리나라가 겪은 대규모 경제 위기는?", ["외환 위기(IMF)", "대공황", "오일 쇼크", "금융 실명제"], "1997년 외환 위기로 IMF 구제 금융을 받았습니다.", 2], ["조선왕조실록이 지닌 가치로 알맞은 것은?", ["유네스코 세계기록유산", "건축 유산", "무형 유산", "자연 유산"], "조선왕조실록은 1997년 세계기록유산으로 등재되었습니다.", 2], ["훈민정음 창제의 목적으로 알맞은 것은?", ["백성이 쉽게 글을 익혀 뜻을 펴게 하려고", "중국 문자를 대신하려고", "양반의 학문을 위해", "외교 문서를 쓰려고"], "훈민정음 서문에 애민 정신이 잘 드러납니다.", 2], ["신라 말 지방에서 성장하여 고려 건국의 기반이 된 세력은?", ["호족", "문벌귀족", "권문세족", "신진사대부"], "호족은 지방의 군사·경제력을 갖춘 세력이었습니다.", 3], ["고려 말 성리학을 바탕으로 개혁을 주장한 세력은?", ["신진사대부", "권문세족", "호족", "무신"], "정도전·정몽주 등 신진사대부가 조선 건국을 주도했습니다.", 3], ["세도 정치기에 삼정의 문란으로 일어난 1862년의 봉기는?", ["임술 농민 봉기", "동학농민운동", "홍경래의 난", "만적의 난"], "1862년 진주를 시작으로 전국에서 농민 봉기가 일어났습니다.", 3], ["1811년 서북 지역 차별에 반발해 일어난 난은?", ["홍경래의 난", "임술 농민 봉기", "이괄의 난", "묘청의 난"], "평안도 지역 차별이 주요 원인이었습니다.", 3]], "sci": [["뉴턴의 운동 제2법칙을 나타낸 식은?", ["F = ma", "F = mv", "F = mgh", "F = ½mv²"], "알짜힘 = 질량 × 가속도입니다.", 2], ["운동량을 구하는 식은?", ["p = mv", "p = ma", "p = ½mv²", "p = mgh"], "운동량 = 질량 × 속도입니다.", 3], ["질량 m, 높이 h인 물체의 위치 에너지는?", ["mgh", "½mv²", "mv", "ma"], "중력 퍼텐셜 에너지 = mgh입니다.", 2], ["질량 m, 속력 v인 물체의 운동 에너지는?", ["½mv²", "mv", "mgh", "mv²"], "운동 에너지 = ½mv²입니다.", 2], ["역학적 에너지 보존이 성립하는 조건은?", ["마찰과 공기 저항이 없을 때", "항상 성립", "마찰이 클 때", "속도가 일정할 때"], "비보존력이 작용하지 않을 때 역학적 에너지가 보존됩니다.", 3], ["일의 양을 구하는 식은?", ["힘 × 이동 거리", "힘 ÷ 시간", "질량 × 속도", "힘 × 시간"], "W = F × s (힘 방향의 이동 거리)입니다.", 2], ["일률(power)의 단위는?", ["W(와트)", "J(줄)", "N(뉴턴)", "Pa(파스칼)"], "일률 = 일 ÷ 시간, 단위는 와트입니다.", 2], ["전력을 구하는 식은?", ["P = VI", "P = V/I", "P = I/V", "P = V²I"], "전력 = 전압 × 전류입니다.", 3], ["원자에서 양성자와 중성자가 모여 이루는 부분은?", ["원자핵", "전자껍질", "전자", "분자"], "원자핵은 양성자와 중성자로 이루어져 있습니다.", 2], ["원소의 화학적 성질을 결정하는 것은?", ["최외각 전자 수", "중성자 수", "질량수", "밀도"], "원자가 전자(최외각 전자) 수가 화학적 성질을 결정합니다.", 3], ["주기율표에서 같은 세로줄(족)의 원소가 갖는 공통점은?", ["최외각 전자 수가 같다", "원자량이 같다", "중성자 수가 같다", "녹는점이 같다"], "같은 족은 원자가 전자 수가 같아 성질이 비슷합니다.", 3], ["나트륨(Na)이 염소(Cl)와 결합할 때 형성되는 결합은?", ["이온 결합", "공유 결합", "금속 결합", "수소 결합"], "금속과 비금속의 전자 주고받기로 이온 결합이 형성됩니다.", 3], ["물(H₂O) 분자 내 수소와 산소 사이의 결합은?", ["공유 결합", "이온 결합", "금속 결합", "반데르발스 결합"], "비금속끼리 전자쌍을 공유하는 공유 결합입니다.", 3], ["산과 염기가 만나 물과 염을 만드는 반응은?", ["중화 반응", "산화 반응", "환원 반응", "연소 반응"], "산 + 염기 → 물 + 염, 중화 반응입니다.", 2], ["산성 용액의 공통적인 성질을 만드는 이온은?", ["수소 이온(H⁺)", "수산화 이온(OH⁻)", "염화 이온(Cl⁻)", "나트륨 이온(Na⁺)"], "산성은 H⁺, 염기성은 OH⁻ 때문에 나타납니다.", 3], ["pH가 3인 용액과 pH가 5인 용액의 수소 이온 농도 비는?", ["100배", "2배", "10배", "1000배"], "pH가 1 작아지면 농도는 10배 커지므로 100배입니다.", 3], ["물질이 산소를 잃는 반응을 무엇이라 할까요?", ["환원", "산화", "연소", "중화"], "산소를 얻으면 산화, 잃으면 환원입니다.", 2], ["광합성의 화학 반응식에서 만들어지는 물질은?", ["포도당과 산소", "이산화탄소와 물", "녹말과 질소", "단백질과 산소"], "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂입니다.", 3], ["세포 호흡이 주로 일어나는 세포 소기관은?", ["미토콘드리아", "엽록체", "리보솜", "골지체"], "미토콘드리아에서 포도당을 분해해 ATP를 만듭니다.", 2], ["세포에서 단백질을 합성하는 소기관은?", ["리보솜", "리소좀", "액포", "엽록체"], "리보솜에서 아미노산이 결합해 단백질이 만들어집니다.", 3], ["DNA의 구조를 나타내는 표현으로 알맞은 것은?", ["이중 나선", "단일 사슬", "삼중 나선", "고리 모양"], "왓슨과 크릭이 이중 나선 구조를 밝혔습니다.", 2], ["DNA 염기 중 아데닌(A)과 상보적으로 결합하는 것은?", ["타이민(T)", "구아닌(G)", "사이토신(C)", "우라실(U)"], "DNA에서는 A-T, G-C가 짝을 이룹니다.", 3], ["유전 정보가 단백질로 발현되는 과정의 순서는?", ["DNA → RNA → 단백질", "RNA → DNA → 단백질", "단백질 → DNA → RNA", "DNA → 단백질 → RNA"], "전사와 번역을 거치는 중심 원리입니다.", 3], ["사람의 체세포 염색체 수는?", ["46개", "23개", "44개", "48개"], "사람의 체세포는 23쌍, 46개입니다.", 2], ["생식세포 분열(감수분열) 결과 만들어지는 세포의 염색체 수는?", ["23개", "46개", "92개", "12개"], "감수분열로 염색체 수가 절반이 됩니다.", 3], ["혈액형이 A형인 사람이 가질 수 있는 유전자형은?", ["AA 또는 AO", "AB", "OO", "BB"], "A형은 AA 또는 AO입니다.", 3], ["생태계에서 에너지가 이동하는 방향으로 알맞은 것은?", ["생산자 → 소비자 → 분해자", "분해자 → 생산자 → 소비자", "소비자 → 생산자", "순환하지 않음"], "에너지는 먹이 사슬을 따라 한 방향으로 흐릅니다.", 2], ["먹이 사슬에서 상위 영양 단계로 갈수록 나타나는 현상은?", ["에너지양이 줄어든다", "에너지양이 늘어난다", "개체 수가 늘어난다", "생물량이 늘어난다"], "약 10%만 다음 단계로 전달됩니다(에너지 피라미드).", 3], ["체온·혈당 등을 일정하게 유지하려는 우리 몸의 성질은?", ["항상성", "적응", "진화", "면역"], "항상성은 내부 환경을 일정하게 유지하는 성질입니다.", 2], ["혈당량을 낮추는 호르몬은?", ["인슐린", "글루카곤", "아드레날린", "티록신"], "인슐린은 혈당을 낮추고, 글루카곤은 높입니다.", 3], ["갑상샘에서 분비되어 물질대사를 촉진하는 호르몬은?", ["티록신", "인슐린", "성장호르몬", "에스트로젠"], "티록신은 세포 호흡과 물질대사를 촉진합니다.", 3], ["지구 대기의 약 78%를 차지하는 기체는?", ["질소", "산소", "이산화탄소", "아르곤"], "질소 약 78%, 산소 약 21%입니다.", 2], ["지구 온난화의 주된 원인 기체는?", ["이산화탄소", "질소", "산소", "헬륨"], "온실 기체 중 이산화탄소의 기여가 가장 큽니다.", 1], ["판과 판이 서로 멀어지는 경계에서 나타나는 지형은?", ["해령", "해구", "습곡 산맥", "호상 열도"], "발산형 경계에서는 해령과 열곡이 발달합니다.", 3], ["판이 서로 부딪쳐 한쪽이 밀려 들어가는 경계 지형은?", ["해구", "해령", "변환 단층", "열곡"], "수렴형 경계에서는 해구와 습곡 산맥이 생깁니다.", 3], ["규모와 진도의 차이를 바르게 설명한 것은?", ["규모는 절대적 세기, 진도는 상대적 피해 정도", "둘 다 같은 값", "진도가 절대적 세기", "규모는 관측 지점마다 다르다"], "규모는 지진 자체의 에너지, 진도는 지점별 피해 정도입니다.", 3], ["별의 밝기를 나타내는 등급에 대한 설명으로 옳은 것은?", ["등급 숫자가 작을수록 밝다", "숫자가 클수록 밝다", "등급과 밝기는 무관", "0등급이 가장 어둡다"], "1등성이 6등성보다 약 100배 밝습니다.", 3], ["별의 색이 붉게 보일 때 표면 온도는?", ["낮다", "높다", "변화 없다", "측정 불가"], "파란 별이 뜨겁고 붉은 별이 상대적으로 차갑습니다.", 3], ["우주가 한 점에서 시작해 팽창했다는 이론은?", ["빅뱅 이론", "정상 우주론", "천동설", "성운설"], "빅뱅 이론은 우주 배경 복사 등으로 뒷받침됩니다.", 2], ["멀리 있는 은하일수록 빠르게 멀어진다는 법칙은?", ["허블 법칙", "케플러 법칙", "옴의 법칙", "보일 법칙"], "허블 법칙은 우주 팽창의 증거입니다.", 3], ["태양 에너지를 만들어 내는 반응은?", ["수소 핵융합", "핵분열", "연소", "화학 반응"], "수소 4개가 헬륨 1개로 융합하며 에너지를 냅니다.", 2], ["원자력 발전에서 이용하는 반응은?", ["핵분열", "핵융합", "연소", "전기 분해"], "우라늄의 핵분열 에너지를 이용합니다.", 2], ["신재생 에너지에 해당하지 않는 것은?", ["석탄", "태양광", "풍력", "지열"], "석탄은 화석 연료입니다.", 1], ["온실 효과를 일으키는 기체가 아닌 것은?", ["질소", "메테인", "수증기", "이산화탄소"], "질소는 온실 기체가 아닙니다.", 3], ["기체의 압력과 부피가 반비례한다는 법칙은?", ["보일 법칙", "샤를 법칙", "아보가드로 법칙", "돌턴 법칙"], "온도가 일정할 때 PV = 일정입니다.", 3], ["온도가 높아지면 기체의 부피가 커진다는 법칙은?", ["샤를 법칙", "보일 법칙", "훅 법칙", "패러데이 법칙"], "압력이 일정할 때 부피는 절대 온도에 비례합니다.", 3], ["파동에서 진동수와 파장의 관계로 옳은 것은?", ["속력 = 진동수 × 파장", "속력 = 진동수 ÷ 파장", "속력 = 파장 ÷ 진동수", "무관하다"], "v = fλ입니다.", 3], ["빛이 매질을 지날 때 파장에 따라 굴절률이 달라 색이 나뉘는 현상은?", ["분산", "회절", "간섭", "편광"], "프리즘의 무지개가 분산의 예입니다.", 3], ["두 파동이 겹쳐 세기가 커지거나 작아지는 현상은?", ["간섭", "굴절", "반사", "분산"], "보강 간섭과 상쇄 간섭이 있습니다.", 3], ["전자기파 중 파장이 가장 짧은 것은?", ["감마선", "적외선", "전파", "가시광선"], "감마선 < X선 < 자외선 < 가시광선 < 적외선 < 전파 순으로 파장이 깁니다.", 3], ["휴대전화 통신에 주로 이용되는 전자기파는?", ["전파", "감마선", "X선", "자외선"], "전파는 파장이 길어 통신에 이용됩니다.", 2], ["물체의 온도가 높을수록 방출하는 복사 에너지의 최대 파장은?", ["짧아진다", "길어진다", "변하지 않는다", "0이 된다"], "빈의 변위 법칙에 따라 짧아집니다.", 3], ["열이 물질의 이동 없이 직접 전달되는 방식은?", ["복사", "전도", "대류", "증발"], "복사는 매질 없이 전자기파로 열이 전달됩니다.", 3], ["엔트로피에 대한 설명으로 옳은 것은?", ["고립계에서 엔트로피는 증가한다", "항상 감소한다", "항상 일정하다", "측정할 수 없다"], "열역학 제2법칙에 따라 자연은 무질서도가 증가합니다.", 3], ["질량 보존 법칙을 처음 밝힌 과학자는?", ["라부아지에", "돌턴", "아보가드로", "프루스트"], "라부아지에는 연소 실험으로 질량 보존을 확인했습니다.", 3], ["일정 성분비 법칙을 밝힌 과학자는?", ["프루스트", "라부아지에", "돌턴", "보일"], "화합물을 이루는 성분 원소의 질량비는 일정합니다.", 3], ["원자설을 제시한 과학자는?", ["돌턴", "톰슨", "러더퍼드", "보어"], "돌턴은 물질이 더 이상 쪼갤 수 없는 원자로 되어 있다고 했습니다.", 3], ["원자핵의 존재를 밝힌 알파 입자 산란 실험을 한 과학자는?", ["러더퍼드", "돌턴", "톰슨", "채드윅"], "러더퍼드의 산란 실험으로 원자핵이 발견되었습니다.", 3], ["진화론을 체계화한 『종의 기원』의 저자는?", ["다윈", "멘델", "라마르크", "린네"], "찰스 다윈은 자연 선택에 의한 진화를 주장했습니다.", 2], ["백신의 원리를 확립하고 저온 살균법을 개발한 과학자는?", ["파스퇴르", "코흐", "플레밍", "제너"], "파스퇴르는 미생물학의 아버지로 불립니다.", 3], ["푸른곰팡이에서 페니실린을 발견한 과학자는?", ["플레밍", "파스퇴르", "코흐", "리스터"], "1928년 플레밍의 페니실린 발견은 항생제 시대를 열었습니다.", 2], ["상대성 이론을 제시한 과학자는?", ["아인슈타인", "뉴턴", "갈릴레이", "호킹"], "아인슈타인은 특수·일반 상대성 이론을 발표했습니다.", 1]], "soc": [["인간의 존엄성을 실현하기 위한 조건으로 가장 알맞은 것은?", ["기본권 보장과 인권 존중", "경제 성장만 추구", "다수의 의견만 따름", "전통의 무조건 계승"], "인간의 존엄성은 인권 보장을 통해 실현됩니다.", 2], ["세계 인권 선언이 채택된 해는?", ["1948년", "1919년", "1789년", "1966년"], "1948년 유엔 총회에서 채택되었습니다.", 3], ["국가 권력이 헌법에 따라 행사되어야 한다는 원리는?", ["입헌주의", "권위주의", "전체주의", "중상주의"], "입헌주의는 헌법에 의한 통치를 뜻합니다.", 3], ["법 앞에 모든 사람이 평등하다는 원칙과 관련 깊은 것은?", ["법치주의", "관습주의", "연고주의", "실용주의"], "법치주의는 자의적 지배를 배격합니다.", 2], ["정의를 '각자에게 각자의 몫을 주는 것'으로 본 고대 철학자는?", ["아리스토텔레스", "홉스", "루소", "벤담"], "아리스토텔레스는 분배적·교정적 정의를 구분했습니다.", 3], ["'최대 다수의 최대 행복'을 주장한 사상은?", ["공리주의", "의무론", "덕 윤리", "계약론"], "벤담과 밀의 공리주의입니다.", 2], ["행위의 결과보다 동기와 의무를 중시한 철학자는?", ["칸트", "벤담", "밀", "스미스"], "칸트는 정언 명령에 따른 의무론적 윤리를 제시했습니다.", 3], ["롤스가 정의의 원칙을 도출하기 위해 가정한 상황은?", ["무지의 베일", "자연 상태", "만인의 투쟁", "보이지 않는 손"], "롤스는 원초적 입장에서 무지의 베일을 가정했습니다.", 3], ["사회 계약설에서 '만인의 만인에 대한 투쟁'을 주장한 사상가는?", ["홉스", "로크", "루소", "몽테스키외"], "홉스는 자연 상태를 투쟁 상태로 보았습니다.", 3], ["저항권을 인정하며 미국 독립에 영향을 준 사회 계약론자는?", ["로크", "홉스", "마키아벨리", "보댕"], "로크는 정부가 신탁을 어기면 저항할 수 있다고 보았습니다.", 3], ["삼권분립을 체계화한 계몽 사상가는?", ["몽테스키외", "루소", "볼테르", "디드로"], "몽테스키외는 『법의 정신』에서 권력 분립을 주장했습니다.", 3], ["'보이지 않는 손'을 말하며 시장 경제를 옹호한 경제학자는?", ["애덤 스미스", "케인스", "마르크스", "리카도"], "애덤 스미스의 『국부론』입니다.", 2], ["대공황 이후 정부의 적극적 개입을 주장한 경제학자는?", ["케인스", "애덤 스미스", "하이에크", "프리드먼"], "케인스는 유효 수요 창출을 위한 재정 정책을 강조했습니다.", 3], ["시장 실패의 사례로 알맞지 않은 것은?", ["가격이 수요·공급으로 결정됨", "독과점", "외부 효과", "공공재 부족"], "수급에 따른 가격 결정은 시장의 정상 작동입니다.", 3], ["공장 매연으로 주민이 피해를 보는 것은 어떤 현상인가요?", ["외부 불경제", "외부 경제", "공공재", "정보 비대칭"], "시장을 통하지 않고 타인에게 손해를 주면 외부 불경제입니다.", 3], ["기회비용에 포함되는 것으로 옳은 것은?", ["명시적 비용과 암묵적 비용", "명시적 비용", "매몰 비용", "고정 비용"], "기회비용 = 명시적 비용 + 암묵적 비용입니다.", 3], ["이미 지출되어 회수할 수 없는 비용은?", ["매몰 비용", "기회비용", "한계 비용", "가변 비용"], "합리적 선택에서는 매몰 비용을 고려하지 않습니다.", 3], ["수요의 가격 탄력성이 큰 상품의 특징은?", ["대체재가 많다", "생활 필수품이다", "대체재가 없다", "가격 변화에 둔감하다"], "대체재가 많을수록 탄력적입니다.", 3], ["환율이 상승할 때(원화 가치 하락) 유리해지는 쪽은?", ["수출 기업", "해외 유학생", "수입 업체", "해외여행객"], "환율 상승은 수출에 유리, 수입·해외여행에 불리합니다.", 3], ["물가 상승으로 화폐 가치가 떨어질 때 유리한 사람은?", ["채무자", "채권자", "연금 생활자", "예금자"], "인플레이션은 돈을 빌린 채무자에게 유리합니다.", 3], ["중앙은행이 기준 금리를 올릴 때 기대되는 효과는?", ["물가 안정", "소비 확대", "투자 확대", "통화량 증가"], "금리 인상은 통화량을 줄여 물가 상승을 억제합니다.", 3], ["국내총생산(GDP)에 포함되는 것은?", ["국내에서 새로 생산된 최종 생산물", "중고차 거래", "주부의 가사 노동", "주식 매매 차익"], "GDP는 일정 기간 국내에서 생산된 최종 생산물의 시장 가치입니다.", 3], ["소득 분배의 불평등 정도를 나타내는 지표는?", ["지니 계수", "엥겔 계수", "물가 지수", "실업률"], "지니 계수는 0에 가까울수록 평등합니다.", 3], ["복지 제도 중 국민이 보험료를 내고 위험에 대비하는 것은?", ["사회 보험", "공공 부조", "사회 서비스", "기부"], "국민연금·건강보험 등이 사회 보험입니다.", 3], ["생활이 어려운 국민에게 국가가 비용을 부담해 지원하는 제도는?", ["공공 부조", "사회 보험", "민간 보험", "사회 서비스"], "국민기초생활보장제도가 대표적입니다.", 3], ["문화를 평가할 때 우열이 없다고 보는 태도는?", ["문화 상대주의", "자문화 중심주의", "문화 사대주의", "문화 절대주의"], "각 문화를 그 사회 맥락에서 이해합니다.", 2], ["다른 문화를 우월하게 여겨 자기 문화를 낮추는 태도는?", ["문화 사대주의", "자문화 중심주의", "문화 상대주의", "문화 융합"], "문화 사대주의는 주체성을 잃게 할 수 있습니다.", 3], ["극단적 문화 상대주의의 문제점으로 알맞은 것은?", ["보편 윤리에 어긋나는 관습까지 인정할 수 있다", "문화 다양성을 해친다", "자문화만 우월하다고 본다", "문화를 획일화한다"], "인간 존엄성을 해치는 관습까지 용인해서는 안 됩니다.", 3], ["서로 다른 문화가 만나 새로운 제3의 문화가 만들어지는 현상은?", ["문화 융합", "문화 동화", "문화 병존", "문화 지체"], "돌침대, 퓨전 음식 등이 문화 융합의 예입니다.", 3], ["물질문화의 변화 속도를 비물질문화가 따르지 못하는 현상은?", ["문화 지체", "문화 융합", "문화 접변", "문화 상대주의"], "오그번이 제시한 개념입니다.", 3], ["인구 피라미드에서 저출산·고령화 사회의 형태는?", ["종형 또는 방추형", "피라미드형", "별형", "표주박형"], "출산율이 낮아지면 종형·방추형으로 변합니다.", 3], ["도시화율이 높아질 때 나타나는 문제로 알맞은 것은?", ["주택 부족과 교통 혼잡", "농촌 인구 증가", "도시 인구 감소", "기반 시설 과잉"], "급격한 도시화는 주택·교통·환경 문제를 낳습니다.", 2], ["기후 변화에 대응하기 위한 2015년의 국제 협약은?", ["파리 협정", "교토 의정서", "몬트리올 의정서", "람사르 협약"], "파리 협정은 모든 당사국이 감축에 참여합니다.", 3], ["오존층 파괴 물질 규제를 위한 국제 협약은?", ["몬트리올 의정서", "교토 의정서", "파리 협정", "바젤 협약"], "프레온 가스 규제를 위한 협약입니다.", 3], ["습지 보전을 위한 국제 협약은?", ["람사르 협약", "바젤 협약", "교토 의정서", "생물다양성 협약"], "람사르 협약은 물새 서식지 습지를 보호합니다.", 3], ["'미래 세대의 필요를 해치지 않으면서 현 세대의 필요를 충족하는 발전'은?", ["지속 가능한 발전", "고도 성장", "수출 주도 성장", "산업화"], "브룬틀란 보고서의 정의입니다.", 2], ["세계화의 부정적 영향으로 알맞은 것은?", ["문화의 획일화와 빈부 격차 확대", "교류 확대", "기술 이전", "시장 확대"], "세계화는 기회와 함께 격차·획일화 문제를 낳습니다.", 2], ["공정 무역이 추구하는 목적은?", ["생산자에게 정당한 대가를 지급", "최저가 상품 공급", "무역 장벽 강화", "대기업 이윤 극대화"], "공정 무역은 개발도상국 생산자의 권익을 보호합니다.", 2], ["열대 우림이 급격히 파괴될 때 나타나는 결과가 아닌 것은?", ["생물 다양성 증가", "이산화탄소 흡수량 감소", "사막화 진행", "기후 변화 심화"], "열대림 파괴는 생물 다양성을 감소시킵니다.", 2], ["석유 자원이 가장 많이 매장된 지역은?", ["서남아시아(페르시아만)", "북유럽", "동남아시아", "오세아니아"], "페르시아만 연안에 세계 석유의 상당량이 매장되어 있습니다.", 2], ["산업 혁명 이후 도시로 인구가 몰린 현상의 직접 원인은?", ["공장에서의 일자리 증가", "농업 생산 증가", "전쟁 발발", "기후 변화"], "산업화로 도시에 일자리가 생기며 이촌향도가 일어났습니다.", 2], ["다문화 사회에서 필요한 태도로 알맞은 것은?", ["차이를 인정하고 함께 살아가려는 자세", "동화를 강요하는 자세", "무관심", "배타적 태도"], "상호 존중과 공존이 다문화 사회의 기본입니다.", 1], ["사회 집단 중 구성원의 친밀한 대면 관계로 이루어진 집단은?", ["1차 집단", "2차 집단", "공식 조직", "이익 사회"], "가족·또래 집단이 대표적인 1차 집단입니다.", 3], ["개인이 사회적 지위에 따라 기대되는 행동 양식은?", ["역할", "지위", "규범", "제재"], "지위에 따라 기대되는 행동이 역할입니다.", 3], ["한 사람이 여러 역할을 동시에 수행하며 겪는 갈등은?", ["역할 갈등", "지위 불일치", "아노미", "일탈"], "직장인이자 부모인 경우가 대표적입니다.", 2], ["사회 규범이 약해져 혼란이 생긴 상태를 뜻하는 개념은?", ["아노미", "연대", "동조", "사회화"], "뒤르켐의 아노미 이론입니다.", 3], ["사회화 기관 중 가장 기초적인 1차적 기관은?", ["가족", "학교", "직장", "대중 매체"], "가족은 기본적 인성과 규범을 형성합니다.", 1], ["헌법이 보장하는 자유권에 해당하는 것은?", ["신체의 자유", "교육을 받을 권리", "근로 3권", "선거권"], "신체·양심·종교의 자유가 자유권입니다.", 3], ["국민이 국가에 인간다운 생활 보장을 요구하는 권리는?", ["사회권", "자유권", "참정권", "청구권"], "사회권은 인간다운 생활을 할 권리를 뜻합니다.", 3], ["국민이 정치에 참여할 수 있는 권리는?", ["참정권", "자유권", "사회권", "평등권"], "선거권·공무담임권·국민투표권이 참정권입니다.", 3], ["기본권 제한의 요건으로 헌법이 정한 것은?", ["법률로써 필요한 경우에 한하여", "대통령령으로 언제든지", "다수결로 언제든지", "제한할 수 없음"], "헌법 제37조 2항, 본질적 내용은 침해할 수 없습니다.", 3]], "mathc": [["이차방정식 ax²+bx+c=0의 판별식 D는?", ["b²−4ac", "b²+4ac", "2a−b", "−b/2a"], "D>0이면 서로 다른 두 실근, D=0이면 중근, D<0이면 허근입니다.", 3], ["이차방정식의 판별식 D=0일 때 근의 개수는?", ["중근 1개", "서로 다른 2개", "0개", "3개"], "D=0이면 중근(서로 같은 두 실근)을 가집니다.", 3], ["이차방정식 x²−5x+6=0의 두 근의 합은?", ["5", "−5", "6", "1"], "근과 계수의 관계: 두 근의 합 = −b/a = 5입니다.", 3], ["이차방정식 x²−5x+6=0의 두 근의 곱은?", ["6", "5", "−6", "1"], "두 근의 곱 = c/a = 6입니다.", 3], ["이차함수 y=a(x−p)²+q의 꼭짓점 좌표는?", ["(p, q)", "(−p, q)", "(p, −q)", "(q, p)"], "표준형에서 꼭짓점은 (p, q)입니다.", 3], ["이차함수 y=x²−4x+3의 축의 방정식은?", ["x=2", "x=−2", "x=4", "x=3"], "축은 x = −b/2a = 4/2 = 2입니다.", 3], ["a⁰의 값은? (a≠0)", ["1", "0", "a", "정의되지 않음"], "0이 아닌 수의 0제곱은 1입니다.", 2], ["a^m × a^n을 간단히 하면?", ["a^(m+n)", "a^(mn)", "a^(m−n)", "2a^(m+n)"], "밑이 같은 거듭제곱의 곱은 지수를 더합니다.", 2], ["(a^m)^n을 간단히 하면?", ["a^(mn)", "a^(m+n)", "a^(m−n)", "a^m + a^n"], "거듭제곱의 거듭제곱은 지수끼리 곱합니다.", 3], ["a^(−n)을 분수로 나타내면?", ["1/aⁿ", "−aⁿ", "aⁿ", "n/a"], "음의 지수는 역수를 뜻합니다.", 3], ["log₂8의 값은?", ["3", "2", "4", "8"], "2³=8이므로 log₂8=3입니다.", 3], ["log₁₀100의 값은?", ["2", "10", "100", "1"], "10²=100이므로 값은 2입니다.", 2], ["logₐM + logₐN을 하나로 나타내면?", ["logₐ(MN)", "logₐ(M+N)", "logₐ(M/N)", "logₐM × logₐN"], "로그의 합은 진수의 곱입니다.", 3], ["logₐM − logₐN을 하나로 나타내면?", ["logₐ(M/N)", "logₐ(M−N)", "logₐ(MN)", "logₐM ÷ logₐN"], "로그의 차는 진수의 나눗셈입니다.", 3], ["첫째항 a, 공차 d인 등차수열의 일반항 aₙ은?", ["a+(n−1)d", "a+nd", "a×dⁿ⁻¹", "a+(n+1)d"], "등차수열의 일반항 공식입니다.", 3], ["첫째항 a, 공비 r인 등비수열의 일반항 aₙ은?", ["arⁿ⁻¹", "a+(n−1)r", "arⁿ", "a+rⁿ"], "등비수열의 일반항 공식입니다.", 3], ["등차수열 3, 7, 11, 15…의 공차는?", ["4", "3", "7", "2"], "연속한 두 항의 차가 4로 일정합니다.", 2], ["등비수열 2, 6, 18, 54…의 공비는?", ["3", "2", "4", "6"], "뒤 항 ÷ 앞 항 = 3입니다.", 2], ["1부터 n까지 자연수의 합을 구하는 공식은?", ["n(n+1)/2", "n(n−1)/2", "n²/2", "n(n+1)"], "가우스 합 공식입니다.", 3], ["함수 f(x)=x²의 도함수 f'(x)는?", ["2x", "x", "x²", "2"], "xⁿ의 도함수는 nxⁿ⁻¹입니다.", 3], ["함수 f(x)=x³의 도함수 f'(x)는?", ["3x²", "x²", "3x", "x⁴/4"], "미분하면 3x²입니다.", 3], ["상수함수 f(x)=5의 도함수는?", ["0", "5", "1", "x"], "상수의 미분은 0입니다.", 2], ["도함수 f'(a)가 나타내는 것은?", ["x=a에서의 접선의 기울기", "x=a에서의 함숫값", "넓이", "평균값"], "미분계수는 그 점에서의 접선의 기울기입니다.", 3], ["극댓값을 가질 때 f'(x)의 부호 변화는?", ["양에서 음으로", "음에서 양으로", "변화 없음", "항상 0"], "증가하다 감소로 바뀌면 극대입니다.", 3], ["두 점 (1,2), (4,8)을 지나는 직선의 기울기는?", ["2", "3", "6", "1/2"], "(8−2)/(4−1) = 6/3 = 2입니다.", 3], ["두 점 (0,0), (3,4) 사이의 거리는?", ["5", "7", "12", "3"], "√(3²+4²) = √25 = 5입니다.", 3], ["원 x²+y²=25의 반지름은?", ["5", "25", "10", "√5"], "x²+y²=r²에서 r=5입니다.", 2], ["집합 A={1,2,3}의 부분집합의 개수는?", ["8개", "6개", "3개", "9개"], "2³ = 8개입니다.", 3], ["서로 다른 5개에서 3개를 뽑아 나열하는 경우의 수는?", ["60", "10", "15", "125"], "₅P₃ = 5×4×3 = 60입니다.", 3], ["서로 다른 5개에서 순서 없이 3개를 뽑는 경우의 수는?", ["10", "60", "15", "20"], "₅C₃ = 10입니다.", 3], ["sin²θ + cos²θ의 값은?", ["1", "0", "2", "sinθcosθ"], "삼각함수의 기본 항등식입니다.", 3], ["sin 30°의 값은?", ["1/2", "√3/2", "√2/2", "1"], "sin 30° = 1/2입니다.", 2], ["cos 60°의 값은?", ["1/2", "√3/2", "1", "0"], "cos 60° = 1/2입니다.", 2], ["tan 45°의 값은?", ["1", "0", "√3", "1/√3"], "tan 45° = 1입니다.", 2], ["삼각형의 넓이를 두 변 a, b와 낀각 C로 구하는 식은?", ["½ab sin C", "ab sin C", "½ab cos C", "ab cos C"], "두 변과 낀각으로 넓이를 구하는 공식입니다.", 3]]};
+
+/* ── 빌더: 원자료 → 문제은행 (정방향/역방향 자동 파생) ── */
+(function buildBank(){
+  RAW.spell.forEach(v=>add("korean","맞춤법·어법",v[4],v[0],v[1],v[2],v[3]));
+
+  const hMeans = RAW.hanja.map(v=>v[1]), hWords = RAW.hanja.map(v=>v[0]);
+  RAW.hanja.forEach(([w,m])=>{
+    let r = mc(m, hMeans);
+    add("korean","어휘·개념어",2,"'"+w+"'의 뜻으로 알맞은 것은?", r.c, r.a, "'"+w+"' — "+m+".");
+    r = mc(w, hWords);
+    add("korean","어휘·개념어",3,"다음 뜻을 가진 낱말은?\n\n\""+m+"\"", r.c, r.a, "'"+m+"' → '"+w+"'입니다.");
+  });
+
+  RAW.concept.forEach(v=>add("korean","문학·문법",v[3],v[0],v[1],0,v[2]));
+
+  const enLv = {"수능 어휘 1":2,"수능 어휘 2":3,"수능 어휘 3":3};
+  Object.entries(RAW.enw).forEach(([sub,list])=>{
+    const means = list.map(w=>w[1]), words = list.map(w=>w[0]);
+    list.forEach(([en,ko])=>{
+      let r = mc(ko, means);
+      add("english",sub,enLv[sub],"'"+en+"'의 뜻은?", r.c, r.a, "'"+en+"' — "+ko+".", {en});
+      r = mc(en, words);
+      add("english",sub,3,"'"+ko+"'을(를) 뜻하는 영어 단어는?", r.c, r.a, "'"+ko+"' = '"+en+"'입니다.");
+    });
+  });
+
+  const iMeans = RAW.eni.map(v=>v[1]), iExprs = RAW.eni.map(v=>v[0]);
+  RAW.eni.forEach(([en,ko,lv])=>{
+    let r = mc(ko, iMeans);
+    add("english","숙어·구문",lv,"'"+en+"'의 뜻은?", r.c, r.a, "'"+en+"' — "+ko+".", {en});
+    r = mc(en, iExprs);
+    add("english","숙어·구문",3,"'"+ko+"'을(를) 뜻하는 영어 표현은?", r.c, r.a, "'"+ko+"' = '"+en+"'입니다.");
+  });
+
+  const idMeans = RAW.idiom.map(v=>v[1]), idShort = RAW.idiom.map(v=>v[0].split("(")[0]);
+  RAW.idiom.forEach(([full,mean,lv])=>{
+    const short = full.split("(")[0];
+    let r = mc(mean, idMeans);
+    add("idiom","사자성어",lv,"'"+full+"'의 뜻은?", r.c, r.a, "'"+short+"' — "+mean+".");
+    r = mc(short, idShort);
+    add("idiom","사자성어",3,"다음 뜻을 가진 사자성어는?\n\n\""+mean+"\"", r.c, r.a, "'"+mean+"' → '"+short+"'입니다.");
+  });
+
+  const pvBacks = RAW.prov.map(v=>v[1]), pvMeans = RAW.prov.map(v=>v[2]);
+  RAW.prov.forEach(([front,back,mean,lv])=>{
+    let r = mc(back, pvBacks);
+    add("proverb","속담",lv,"속담을 완성하세요.\n\n"+front+" ( )", r.c, r.a, "\""+front+" "+back+"\" — "+mean+".");
+    r = mc(mean, pvMeans);
+    add("proverb","속담",3,"이 속담의 뜻은?\n\n\""+front+" "+back+"\"", r.c, r.a, "'"+front+" "+back+"' — "+mean+".");
+  });
+
+  const exMeans = RAW.expr.map(v=>v[1]), exExprs = RAW.expr.map(v=>v[0]);
+  RAW.expr.forEach(([e,m,lv])=>{
+    let r = mc(m, exMeans);
+    add("proverb","관용구",lv,"관용구 '"+e+"'의 뜻은?", r.c, r.a, "'"+e+"' — "+m+".");
+    r = mc(e, exExprs);
+    add("proverb","관용구",3,"다음 뜻을 가진 관용구는?\n\n\""+m+"\"", r.c, r.a, "'"+m+"' → '"+e+"'입니다.");
+  });
+
+  RAW.hist.forEach(v=>add("quote","한국사",v[3],v[0],v[1],0,v[2]));
+  RAW.sci.forEach(v=>add("brain","통합과학",v[3],v[0],v[1],0,v[2]));
+  RAW.soc.forEach(v=>add("brain","통합사회",v[3],v[0],v[1],0,v[2]));
+  RAW.mathc.forEach(v=>add("math","수학 개념",v[3],v[0],v[1],0,v[2]));
+})();
+const MATH_COUNT = 6600; // 이차방정식·지수로그·수열·미분·함수·경우의 수 유형별 고유 문제 수(보수적 집계 — 실제 생성 공간은 이보다 큼)
+const TOTAL_Q = BANK.length + MATH_COUNT;
+
+
+/* ---------- 수학 자동 생성 엔진 (무한 출제) ---------- */
+function mkChoices(ans, spread){
+  const set = new Set([ans]);
+  let guard = 0;
+  while(set.size < 4 && guard++ < 200){
+    const d = (rnd(2)? 1 : -1) * (1 + rnd(spread));
+    const v = ans + d;
+    if(v >= 0 && !set.has(v)) set.add(v);
+  }
+  while(set.size < 4) set.add(ans + set.size + rnd(5) + 1);
+  return shuffle([...set]).map(String);
+}
+function mkChoicesZ(ans, spread){          // 음수 정답 허용 보기 생성기
+  const set = new Set([ans]);
+  let guard = 0;
+  while(set.size < 4 && guard++ < 300){
+    const d = (rnd(2)? 1 : -1) * (1 + rnd(spread));
+    if(!set.has(ans + d)) set.add(ans + d);
+  }
+  while(set.size < 4) set.add(ans + set.size + rnd(7) + 1);
+  return shuffle([...set]).map(String);
+}
+/* 계수를 부호와 함께 항으로 표기: 3 → "+ 3x", -3 → "− 3x" */
+function term(co, v){
+  if(co === 0) return "";
+  const s = co < 0 ? " − " : " + ";
+  const n = Math.abs(co);
+  return s + ((n === 1 && v) ? v : n + v);
+}
+function genMath(sub, lv){
+  lv = Math.max(1, Math.min(3, Math.round(lv)));
+  const ri = (a,b) => a + rnd(b - a + 1);
+  const nz = (a,b) => { let v = 0; while(v === 0) v = ri(a,b); return v; };
+  let q, ans, ex;
+
+  if(sub === "이차방정식"){
+    const t = lv === 1 ? 0 : rnd(3);
+    if(t === 0){                                   // 정수근 → 큰 근 구하기
+      let r1 = nz(-9, 9), r2 = nz(-9, 9);
+      if(r1 === r2) r2 = r1 + 1 || 1;
+      const b = -(r1 + r2), c = r1 * r2;
+      ans = Math.max(r1, r2);
+      q = "이차방정식  x²" + term(b,"x") + term(c,"") + " = 0 의 두 근 중 큰 값은?";
+      ex = "(x " + (r1<0? "+ "+(-r1) : "− "+r1) + ")(x " + (r2<0? "+ "+(-r2) : "− "+r2) + ") = 0 이므로 두 근은 " + Math.min(r1,r2) + ", " + Math.max(r1,r2) + "입니다.";
+      const c4 = mkChoicesZ(ans, 5);
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    } else if(t === 1){                            // 판별식
+      const b = nz(-9, 9), cc = nz(-12, 12);
+      ans = b*b - 4*cc;
+      q = "이차방정식  x²" + term(b,"x") + term(cc,"") + " = 0 의 판별식 D의 값은?";
+      ex = "D = b² − 4ac = (" + b + ")² − 4×1×(" + cc + ") = " + ans + "입니다.";
+      const c4 = mkChoicesZ(ans, Math.max(4, Math.ceil(Math.abs(ans)/6)));
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    } else {                                       // 근과 계수의 관계
+      let r1 = nz(-9, 9), r2 = nz(-9, 9);
+      const b = -(r1 + r2), cc = r1 * r2;
+      const wantSum = rnd(2) === 0;
+      ans = wantSum ? (r1 + r2) : (r1 * r2);
+      q = "이차방정식  x²" + term(b,"x") + term(cc,"") + " = 0 의 두 근의 " + (wantSum ? "합" : "곱") + "은?";
+      ex = wantSum ? ("두 근의 합 = −b/a = " + ans + "입니다.") : ("두 근의 곱 = c/a = " + ans + "입니다.");
+      const c4 = mkChoicesZ(ans, 6);
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    }
+  }
+
+  if(sub === "지수·로그"){
+    const t = rnd(3);
+    if(t === 0){                                   // 지수법칙 (지수 구하기)
+      const a = ri(2, 9), m = ri(2, 6), n = ri(2, 6);
+      const op = rnd(2);
+      if(op === 0){ ans = m + n; q = a + "^" + m + " × " + a + "^" + n + " = " + a + "^k 일 때, k의 값은?";
+        ex = "밑이 같으면 지수를 더합니다. k = " + m + " + " + n + " = " + ans + "입니다."; }
+      else { ans = m * n; q = "(" + a + "^" + m + ")^" + n + " = " + a + "^k 일 때, k의 값은?";
+        ex = "거듭제곱의 거듭제곱은 지수를 곱합니다. k = " + m + " × " + n + " = " + ans + "입니다."; }
+    } else if(t === 1){                            // 로그 값
+      const a = pick([2,3,5,10]), k = ri(2, 6);
+      ans = k;
+      q = "log" + a + " " + Math.pow(a,k) + " 의 값은?";
+      ex = a + "^" + k + " = " + Math.pow(a,k) + " 이므로 값은 " + k + "입니다.";
+    } else {                                       // 로그의 합
+      const a = pick([2,3,5]), m = ri(1,4), n = ri(1,4);
+      ans = m + n;
+      q = "log" + a + " " + Math.pow(a,m) + " + log" + a + " " + Math.pow(a,n) + " 의 값은?";
+      ex = "로그의 합은 진수의 곱. log" + a + " " + Math.pow(a,m+n) + " = " + ans + "입니다.";
+    }
+    const c4 = mkChoices(ans, Math.max(3, Math.ceil(ans/2)));
+    return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+  }
+
+  if(sub === "수열"){
+    const t = rnd(3);
+    if(t === 0){                                   // 등차 일반항
+      const a = ri(1, 20), d = nz(-9, 9), n = ri(5, 20);
+      ans = a + (n-1)*d;
+      q = "첫째항이 " + a + ", 공차가 " + d + "인 등차수열의 제" + n + "항은?";
+      ex = "aₙ = a + (n−1)d = " + a + " + " + (n-1) + "×(" + d + ") = " + ans + "입니다.";
+      const c4 = mkChoicesZ(ans, Math.max(3, Math.abs(d)*2));
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    } else if(t === 1){                            // 등차수열의 합
+      const a = ri(1, 15), d = ri(1, 9), n = ri(5, 20);
+      ans = n*(2*a + (n-1)*d)/2;
+      q = "첫째항이 " + a + ", 공차가 " + d + "인 등차수열의 첫째항부터 제" + n + "항까지의 합은?";
+      ex = "Sₙ = n(2a + (n−1)d)/2 = " + n + "×(" + (2*a) + " + " + ((n-1)*d) + ")/2 = " + ans + "입니다.";
+    } else {                                       // 등비 일반항
+      const a = ri(1, 6), r = ri(2, 4), n = ri(3, 7);
+      ans = a * Math.pow(r, n-1);
+      q = "첫째항이 " + a + ", 공비가 " + r + "인 등비수열의 제" + n + "항은?";
+      ex = "aₙ = a·rⁿ⁻¹ = " + a + "×" + r + "^" + (n-1) + " = " + ans + "입니다.";
+    }
+    const c4 = mkChoices(ans, Math.max(4, Math.ceil(ans/8)));
+    return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+  }
+
+  if(sub === "미분"){
+    if(lv === 1 || rnd(2) === 0){                  // 이차함수 미분계수
+      const a = nz(-5, 5), b = nz(-9, 9), k = nz(-4, 4);
+      ans = 2*a*k + b;
+      q = "f(x) = " + (a===1?"":a===-1?"−":a) + "x²" + term(b,"x") + " 일 때,  f′(" + k + ") 의 값은?";
+      ex = "f′(x) = " + (2*a) + "x " + (b>=0? "+ "+b : "− "+(-b)) + " 이므로 f′(" + k + ") = " + ans + "입니다.";
+    } else {                                       // 삼차함수 미분계수
+      const a = nz(-3, 3), b = nz(-5, 5), c = nz(-9, 9), k = nz(-3, 3);
+      ans = 3*a*k*k + 2*b*k + c;
+      q = "f(x) = " + (a===1?"":a===-1?"−":a) + "x³" + term(b,"x²") + term(c,"x") + " 일 때,  f′(" + k + ") 의 값은?";
+      ex = "f′(x) = " + (3*a) + "x²" + term(2*b,"x") + term(c,"") + " 이므로 f′(" + k + ") = " + ans + "입니다.";
+    }
+    const c4 = mkChoicesZ(ans, Math.max(4, Math.ceil(Math.abs(ans)/5)));
+    return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+  }
+
+  if(sub === "함수·그래프"){
+    const t = rnd(3);
+    if(t === 0){                                   // 두 점을 지나는 직선의 기울기
+      const x1 = ri(-8, 8), dx = pick([1,2,3,4]), x2 = x1 + dx;
+      const m = nz(-6, 6), y1 = ri(-9, 9), y2 = y1 + m*dx;
+      ans = m;
+      q = "두 점 (" + x1 + ", " + y1 + "), (" + x2 + ", " + y2 + ") 을 지나는 직선의 기울기는?";
+      ex = "기울기 = (y₂−y₁)/(x₂−x₁) = (" + y2 + " − " + y1 + ") / (" + x2 + " − " + x1 + ") = " + ans + "입니다.";
+      const c4 = mkChoicesZ(ans, 5);
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    } else if(t === 1){                            // 이차함수 꼭짓점의 x좌표
+      const a = pick([1,2,-1,-2,3]), p = nz(-7, 7), qv = ri(-9, 9);
+      const b = -2*a*p, cc = a*p*p + qv;
+      ans = p;
+      q = "이차함수  y = " + (a===1?"":a===-1?"−":a) + "x²" + term(b,"x") + term(cc,"") + " 의 꼭짓점의 x좌표는?";
+      ex = "축은 x = −b/2a = " + (-b) + "/" + (2*a) + " = " + p + "입니다.";
+      const c4 = mkChoicesZ(ans, 5);
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    } else {                                       // 두 점 사이의 거리(정수 결과)
+      const tri = pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25],[12,16,20],[20,21,29]]);
+      const x1 = ri(-6, 6), y1 = ri(-6, 6);
+      const sx = rnd(2)? 1 : -1, sy = rnd(2)? 1 : -1;
+      const x2 = x1 + sx*tri[0], y2 = y1 + sy*tri[1];
+      ans = tri[2];
+      q = "두 점 (" + x1 + ", " + y1 + "), (" + x2 + ", " + y2 + ") 사이의 거리는?";
+      ex = "√((" + (x2-x1) + ")² + (" + (y2-y1) + ")²) = √" + (tri[0]*tri[0] + tri[1]*tri[1]) + " = " + ans + "입니다.";
+      const c4 = mkChoices(ans, 6);
+      return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+    }
+  }
+
+  if(sub === "확률·경우의 수"){
+    const t = rnd(3);
+    if(t === 0){                                   // 순열
+      const n = ri(4, 9), r = ri(2, Math.min(4, n));
+      ans = 1; for(let i=0;i<r;i++) ans *= (n - i);
+      q = "서로 다른 " + n + "개에서 " + r + "개를 뽑아 일렬로 나열하는 경우의 수는?";
+      ex = n + "P" + r + " = " + Array.from({length:r},(_,i)=>n-i).join("×") + " = " + ans + "입니다.";
+    } else if(t === 1){                            // 조합
+      const n = ri(4, 10), r = ri(2, Math.min(4, n-1));
+      let num = 1, den = 1;
+      for(let i=0;i<r;i++){ num *= (n - i); den *= (i + 1); }
+      ans = num / den;
+      q = "서로 다른 " + n + "개에서 순서에 관계없이 " + r + "개를 뽑는 경우의 수는?";
+      ex = n + "C" + r + " = " + num + " ÷ " + den + " = " + ans + "입니다.";
+    } else {                                       // 곱의 법칙
+      const a = ri(3, 9), b = ri(3, 9), c = ri(2, 6);
+      ans = a * b * c;
+      q = "상의 " + a + "종류, 하의 " + b + "종류, 신발 " + c + "종류로 만들 수 있는 서로 다른 차림의 수는?";
+      ex = "곱의 법칙: " + a + " × " + b + " × " + c + " = " + ans + "가지입니다.";
+    }
+    const c4 = mkChoices(ans, Math.max(4, Math.ceil(ans/6)));
+    return { cat:"math", sub, lv, gen:true, q, c:c4, a:c4.indexOf(String(ans)), ex };
+  }
+
+  return genMath(pick(["이차방정식","지수·로그","수열","미분","함수·그래프","확률·경우의 수"]), lv);
+}
+
+/* ---------- 카테고리 메타 ---------- */
+const CATS = {
+  brain:{name:"통합과학·사회", ico:"🔬"},
+  korean:{name:"국어", ico:"📘", subs:["어휘·개념어","맞춤법·어법","문학·문법","전체 랜덤"]},
+  english:{name:"영어", ico:"🌐", subs:["수능 어휘 1","수능 어휘 2","수능 어휘 3","숙어·구문","전체 랜덤"]},
+  math:{name:"수학", ico:"∫", subs:["이차방정식","지수·로그","수열","미분","함수·그래프","확률·경우의 수","수학 개념","혼합 랜덤"]},
+  idiom:{name:"사자성어", ico:"📖"},
+  proverb:{name:"속담·관용구", ico:"💬"},
+  quote:{name:"한국사", ico:"🏛️"},
+  daily:{name:"오늘의 도전", ico:"⭐"},
+  wrongretry:{name:"오답 다시 풀기", ico:"📝"},
+};
+
+/* ---------- 출제 로직 (적응형 난이도) ---------- */
+const Q_PER_SESSION = 10;
+function targetLv(){ return Math.max(1, Math.min(3, S.skill)); }
+function weightedPick(pool, n, rand, t){
+  const weighted = pool.map(q => ({q, w: 1/(0.4 + Math.abs(q.lv - t))}));
+  const out = [];
+  const r = rand || Math.random;
+  while(out.length < n && weighted.length){
+    let sum = weighted.reduce((s,x)=>s+x.w,0), x = r()*sum, idx = 0;
+    for(let i=0;i<weighted.length;i++){ x -= weighted[i].w; if(x<=0){ idx=i; break; } }
+    out.push(weighted[idx].q); weighted.splice(idx,1);
+  }
+  return out;
+}
+function pickFromBank(pool, n, rand){
+  const t = targetLv();
+  if(rand) return weightedPick(pool, n, rand, t);            // 오늘의 도전: 날짜 시드(전원 동일 문제)
+  const seenSet = new Set(S.seen);
+  const unseen = pool.filter(q=>!seenSet.has(qKey(q)));
+  let out = weightedPick(unseen, n, null, t);                 // 1순위: 아직 안 푼 문제
+  if(out.length < n){                                         // 2순위: 가장 오래전에 본 문제부터
+    const order = new Map(S.seen.map((k,i)=>[k,i]));
+    const rest = pool.filter(q=>seenSet.has(qKey(q)) && !out.includes(q))
+      .sort((a,b)=>(order.get(qKey(a))??0)-(order.get(qKey(b))??0));
+    out = out.concat(rest.slice(0, n - out.length));
+  }
+  return out;
+}
+function buildSession(mode, sub){
+  const lv = targetLv();
+  if(mode === "math"){
+    if(sub === "도형") {
+      const bank = BANK.filter(b=>b.cat==="math"&&b.sub==="도형");
+      const qs = pickFromBank(shuffle(bank), Q_PER_SESSION);
+      const used = new Set(qs.map(qKey));
+      let guard = 0;
+      while(qs.length < Q_PER_SESSION && guard++ < 300){
+        const g = genMath("혼합", lv), k = qKey(g);
+        if(used.has(k)) continue;
+        used.add(k); qs.push(g);
+      }
+      return shuffle(qs).slice(0, Q_PER_SESSION);
+    }
+    const s = (sub && sub !== "혼합 랜덤")? sub : "혼합";
+    const out = [], used = new Set();
+    let tries = 0;
+    while(out.length < Q_PER_SESSION && tries++ < 500){
+      const g = genMath(s, lv + (Math.random()-0.5)), k = qKey(g);
+      if(used.has(k)) continue;                       // 세션 내 중복 금지
+      if(tries < 250 && S.seen.includes(k)) continue; // 최근에 푼 문제 회피
+      used.add(k); out.push(g);
+    }
+    return out;
+  }
+  if(mode === "brain" || mode === "daily"){
+    const rand = mode==="daily" ? seededRnd(Number(todayKey().replace(/-/g,""))*7+3) : null;
+    let pool = BANK.slice();
+    const qs = pickFromBank(pool, Q_PER_SESSION - 2, rand);
+    const used = new Set(qs.map(qKey));
+    let guard = 0;
+    while(qs.length < Q_PER_SESSION && guard++ < 300){
+      const g = genMath("혼합", qs.length % 2 ? Math.min(3,lv+1) : lv), k = qKey(g);
+      if(used.has(k) || (!rand && guard < 150 && S.seen.includes(k))) continue;
+      used.add(k); qs.push(g);
+    }
+    return rand ? qs : shuffle(qs);
+  }
+  if(mode === "wrongretry"){
+    return shuffle(S.wrong.map(w=>w.q)).slice(0, Q_PER_SESSION);
+  }
+  let pool = BANK.filter(b=>b.cat===mode);
+  if(sub && !/전체|랜덤/.test(sub)) pool = pool.filter(b=>b.sub===sub);
+  let qs = pickFromBank(pool, Q_PER_SESSION);
+  while(qs.length < Q_PER_SESSION && pool.length) qs = qs.concat(pickFromBank(pool, Q_PER_SESSION-qs.length));
+  if(qs.length < Q_PER_SESSION) while(qs.length<Q_PER_SESSION) qs.push(pick(pool.length?pool:BANK));
+  return qs.slice(0, Q_PER_SESSION);
+}
+
+/* ---------- 화면 전환 ---------- */
+function go(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $("#"+id).classList.add("on");
+  const nav = $("#nav");
+  nav.classList.toggle("on", !["welcome","quiz","result"].includes(id));
+  nav.querySelectorAll("button").forEach(b=>{
+    b.classList.toggle("cur", b.dataset.go===id || (b.dataset.go==="quizquick" && id==="quiz"));
+  });
+  if(id==="home") renderHome();
+  if(id==="notebook") renderNotebook();
+  if(id==="records") renderRecords();
+  if(id==="my") renderMy();
+  window.scrollTo(0,0);
+}
+$("#nav").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(!b.dataset.go) return;                 // 크레딧 탭 등 링크 버튼은 제외
+  if(b.dataset.go==="quizquick"){ startQuiz("brain"); return; }
+  go(b.dataset.go);
+});
+
+/* ---------- 서브 시트 ---------- */
+let subCat = null;
+function openSub(cat){
+  subCat = cat;
+  $("#subTitle").textContent = CATS[cat].ico + " " + CATS[cat].name;
+  $("#subList").innerHTML = CATS[cat].subs.map(s=>`<button class="sub-btn" onclick="startQuiz('${cat}','${s}')">${s}</button>`).join("");
+  $("#subsheet").classList.add("on");
+}
+function closeSub(){ $("#subsheet").classList.remove("on"); }
+$("#subsheet").addEventListener("click", e=>{ if(e.target.id==="subsheet") closeSub(); });
+
+/* ---------- 퀴즈 진행 ---------- */
+let session = null;
+function startQuiz(mode, sub){
+  closeSub();
+  if(mode==="wrongretry" && !S.wrong.length){ toast("오답노트가 비어 있어요!"); return; }
+  const qs = buildSession(mode, sub);
+  session = { mode, sub: sub||"", qs, n: qs.length, i:0, correct:0, combo:0, maxCombo:0, xp:0, answered:false };
+  go("quiz"); renderQ();
+}
+function retrySame(){ startQuiz(session.mode, session.sub); }
+function ttsCancel(){ try{ if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){} }
+function quitQuiz(){ stopSTT(); ttsCancel(); go("home"); }
+
+function renderQ(){
+  const q = session.qs[session.i];
+  session.answered = false;
+  $("#progBar").style.width = (session.i / session.n * 100) + "%";
+  $("#qNum").textContent = (session.i+1) + " / " + session.n;
+  $("#qLevel").textContent = "난이도 " + "★".repeat(q.lv||1);
+  $("#combo").textContent = session.combo >= 2 ? "🔥"+session.combo : "";
+  $("#qcat").textContent = (CATS[q.cat]? CATS[q.cat].name : q.cat) + (q.sub? " · "+q.sub : "");
+  $("#qhint").textContent = q.hint || "";
+  $("#qtext").textContent = q.q;
+  $("#fb").classList.remove("on");
+  $("#nextBtn").style.display = "none";
+  const order = shuffle(q.c.map((c,i)=>({c,i})));
+  q._order = order;
+  $("#choices").innerHTML = order.map((o,idx)=>
+    `<button class="choice" data-idx="${idx}"><span class="n">${idx+1}</span><span>${o.c}</span></button>`).join("");
+  $("#choices").querySelectorAll(".choice").forEach(btn=>{
+    btn.onclick = ()=>answer(Number(btn.dataset.idx));
+  });
+  if(S.set.autoTts) speakQ(q);
+}
+function answer(idx){
+  if(session.answered) return;
+  session.answered = true;
+  stopSTT(); ttsCancel();
+  const q = session.qs[session.i];
+  const correct = q._order[idx].i === q.a;
+  const btns = $("#choices").querySelectorAll(".choice");
+  btns.forEach((b,i)=>{
+    b.disabled = true;
+    if(q._order[i].i === q.a) b.classList.add("ok");
+    else if(i===idx) b.classList.add("no");
+  });
+  S.total++;
+  const st = S.catStat[q.cat] = S.catStat[q.cat] || {t:0,c:0};
+  st.t++;
+  if(correct){
+    sndOk(); speakFeedback(true, q);
+    S.correct++; st.c++;
+    session.correct++; session.combo++;
+    session.maxCombo = Math.max(session.maxCombo, session.combo);
+    const bonus = session.combo>=5? 5 : session.combo>=3? 2 : 0;
+    session.xp += 10 + bonus;
+    S.skill = Math.min(3, S.skill + 0.12);
+    $("#fbHead").textContent = ["정답! 🎉","맞았어요! 👏","완벽해요! ⭐","대단해요! 🌟"][rnd(4)] + (session.combo>=3? "  🔥"+session.combo+"연속!" : "");
+    if(session.mode==="wrongretry"){
+      S.retriedOk++;
+      S.wrong = S.wrong.filter(w=>w.q !== q);
+    }
+  } else {
+    sndNo(); speakFeedback(false, q);
+    session.combo = 0;
+    S.skill = Math.max(0.5, S.skill - 0.18);
+    $("#fbHead").textContent = "아쉬워요! 정답은 '"+q.c[q.a]+"'";
+    if(session.mode!=="wrongretry" && !S.wrong.some(w=>w.key===wrongKey(q))){
+      S.wrong.unshift({key:wrongKey(q), q, day:todayKey()});
+      if(S.wrong.length>200) S.wrong.pop();
+    }
+  }
+  markSeen(q);
+  $("#fbExp").textContent = q.ex || "";
+  $("#fb").classList.add("on");
+  $("#nextBtn").style.display = "block";
+  $("#nextBtn").textContent = session.i === session.n-1 ? "결과 보기 🏁" : "다음 문제 →";
+  $("#combo").textContent = session.combo >= 2 ? "🔥"+session.combo : "";
+  save();
+}
+function qKey(q){ return q.cat+"|"+q.q; }
+const wrongKey = qKey;
+function markSeen(q){
+  const k = qKey(q);
+  const i = S.seen.indexOf(k);
+  if(i >= 0) S.seen.splice(i,1);
+  S.seen.push(k);
+  if(S.seen.length > 1500) S.seen.splice(0, S.seen.length - 1500);
+}
+function nextQ(){
+  ttsCancel();
+  session.i++;
+  if(session.i >= session.n) finish();
+  else renderQ();
+}
+
+/* ---------- 결과 + 배지 ---------- */
+const BADGES = [
+ {id:"first",  i:"🐣", n:"첫걸음",     d:"첫 퀴즈 완료",        f:s=>s.quizzes>=1},
+ {id:"combo5", i:"🔥", n:"5연속 정답", d:"한 번에 5문제 연속",   f:(s,r)=>r.maxCombo>=5},
+ {id:"combo10",i:"⚡", n:"10연속 정답",d:"한 번에 10문제 연속",  f:(s,r)=>r.maxCombo>=10},
+ {id:"perfect",i:"💯", n:"만점왕",     d:"10문제 모두 정답",     f:(s,r)=>r.n===Q_PER_SESSION && r.correct===r.n},
+ {id:"q100",   i:"🎓", n:"백문백답",   d:"누적 100문제 풀기",    f:s=>s.total>=100},
+ {id:"q500",   i:"🏅", n:"오백고지",   d:"누적 500문제 풀기",    f:s=>s.total>=500},
+ {id:"day7",   i:"📅", n:"7일 개근",   d:"7일 연속 출석",       f:s=>s.streakDays>=7},
+ {id:"retry10",i:"💪", n:"오답 정복",  d:"오답 10개 다시 맞히기", f:s=>s.retriedOk>=10},
+ {id:"lv5",    i:"🌟", n:"레벨 5",     d:"레벨 5 달성",         f:s=>levelOf(s.xp).lv>=5},
+ {id:"lv10",   i:"👑", n:"레벨 10",    d:"레벨 10 달성",        f:s=>levelOf(s.xp).lv>=10},
+];
+function levelOf(xp){
+  let lv=1, need=100, acc=0;
+  while(xp >= acc+need){ acc+=need; lv++; need=Math.round(need*1.2); }
+  return {lv, cur:xp-acc, need};
+}
+const LV_NAMES = ["기초 다지기","기초 다지기","개념 완성","개념 완성","유형 숙련","유형 숙련","실전 감각","실전 감각","고득점 도전","고득점 도전","수능 마스터"];
+function lvName(lv){ return LV_NAMES[Math.min(lv, LV_NAMES.length-1)] || "두뇌 마스터"; }
+
+function finish(){
+  S.quizzes++;
+  S.xp += session.xp;
+  const wk = weekKey();
+  if(S.weekKey !== wk){ S.weekKey = wk; S.weekXp = 0; }
+  S.weekXp += session.xp;
+  if(session.n === Q_PER_SESSION){
+    S.bestScore = Math.max(S.bestScore, session.correct);
+    S.bestCombo = Math.max(S.bestCombo, session.maxCombo);
+  }
+
+  const news = [];
+  BADGES.forEach(b=>{
+    if(!S.badges.includes(b.id) && b.f(S, session)){ S.badges.push(b.id); news.push(b); }
+  });
+  save();
+
+  const r = session.correct / session.n;
+  $("#resEmoji").textContent = r===1? "🏆" : r>=0.7? "🎉" : r>=0.4? "😊" : "💪";
+  $("#resTitle").textContent = r===1? "완벽해요, 만점!" : r>=0.7? "참 잘했어요!" : r>=0.4? "좋아요, 조금만 더!" : "괜찮아요, 다시 도전!";
+  $("#resScore").textContent = session.n+"문제 중 "+session.correct+"개 정답";
+  $("#resXp").textContent = "+"+session.xp+" XP" + (session.maxCombo>=3? "  ·  최고 🔥"+session.maxCombo+"연속" : "");
+  $("#newbadges").innerHTML = news.map(b=>
+    `<div class="card"><span style="font-size:28px">${b.i}</span><div><b class="disp">새 배지! ${b.n}</b><div style="font-size:13px;color:var(--ink-soft)">${b.d}</div></div></div>`).join("");
+  if(r>=0.7) sndWin();
+  if(S.set.autoTts && window.speechSynthesis){
+    ttsCancel();
+    ttsSpeak(session.n+"문제 중 "+session.correct+"문제 정답! " + (r===1? "만점입니다. 이 단원은 완성되었습니다." : r>=0.7? "우수합니다. 틀린 문제만 보완하면 됩니다." : r>=0.4? "절반은 잡았습니다. 오답노트를 활용해 보세요." : "개념부터 다시 정리해 봅시다. 충분히 오를 수 있습니다."), "ko-KR", {pitch:1.0, rate:1.0});
+  }
+  go("result");
+}
+
+/* ---------- 홈 렌더 ---------- */
+function checkAttendance(){
+  const t = todayKey();
+  if(S.lastDay === t) return;
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yk = y.getFullYear()+"-"+(y.getMonth()+1)+"-"+y.getDate();
+  S.streakDays = (S.lastDay === yk)? S.streakDays+1 : 1;
+  S.lastDay = t; save();
+  if(S.streakDays>1) toast("🔥 "+S.streakDays+"일 연속 출석!");
+}
+function renderHome(){
+  const lv = levelOf(S.xp);
+  $("#stLv").textContent = "Lv."+lv.lv;
+  $("#stXp").textContent = S.xp;
+  $("#stAcc").textContent = S.total? Math.round(S.correct/S.total*100)+"%" : "-";
+  $("#streakDays").textContent = S.streakDays;
+  $("#cntWrong").textContent = S.wrong.length+"문제";
+  $("#cntAll").textContent = "전영역 "+TOTAL_Q.toLocaleString()+"+ 문제";
+  $("#cntIdiom").textContent = BANK.filter(b=>b.cat==="idiom").length+"문제";
+  $("#cntProverb").textContent = BANK.filter(b=>b.cat==="proverb").length+"문제";
+  $("#cntQuote").textContent = BANK.filter(b=>b.cat==="quote").length+"문제";
+  const hellos = ["오늘도 한 걸음, 수능까지 함께 갑니다 📈","반가워! 준비됐나요? 🧠","오늘의 도전, 함께 해요 ⭐","꾸준함이 실력! 시작해 볼까요? 💪"];
+  $("#hello").textContent = hellos[new Date().getDate() % hellos.length];
+  $("#dailyDesc").textContent = todayKey().split("-").slice(1).join("/") + " 오늘의 10문제!";
+}
+
+/* ---------- 오답노트 렌더 ---------- */
+function renderNotebook(){
+  $("#nbCount").textContent = S.wrong.length+"문제";
+  const body = $("#nbBody");
+  if(!S.wrong.length){
+    body.innerHTML = `<div class="empty">오답이 하나도 없어요! 🎉<br>퀴즈를 풀다 틀린 문제가<br>여기에 자동으로 저장돼요.</div>`;
+    return;
+  }
+  const byCat = {};
+  S.wrong.forEach(w=>{ const n=(CATS[w.q.cat]?CATS[w.q.cat].name:w.q.cat); byCat[n]=(byCat[n]||0)+1; });
+  const summary = Object.entries(byCat).map(([k,v])=>k+" "+v).join(" · ");
+  body.innerHTML =
+    `<button class="retryAll" onclick="startQuiz('wrongretry')">💪 오답 다시 풀기 (${Math.min(S.wrong.length,Q_PER_SESSION)}문제)</button>
+     <div style="font-size:13px;color:var(--ink-soft);margin-bottom:10px">${summary}</div>` +
+    S.wrong.map((w,i)=>`
+      <div class="card wrong-item">
+        <div class="q">${w.q.hint? w.q.hint+"\n":""}${w.q.q.replace(/\n/g,"<br>")}</div>
+        <div class="a">정답: ${w.q.c[w.q.a]}</div>
+        <div class="meta"><span>${(CATS[w.q.cat]?CATS[w.q.cat].name:w.q.cat)}${w.q.sub?" · "+w.q.sub:""} · ${w.day}</span>
+        <button class="del" onclick="delWrong(${i})">삭제</button></div>
+      </div>`).join("");
+}
+function delWrong(i){ S.wrong.splice(i,1); save(); renderNotebook(); toast("삭제했어요"); }
+
+/* ---------- 기록 렌더 ---------- */
+function renderRecords(){
+  $("#weekCard").innerHTML =
+    `<div class="rec-row"><span>이번 주 XP</span><b>${S.weekKey===weekKey()? S.weekXp : 0} XP</b></div>
+     <div class="rec-row"><span>연속 출석</span><b>🔥 ${S.streakDays}일</b></div>
+     <div class="rec-row"><span>완료한 퀴즈</span><b>${S.quizzes}회</b></div>`;
+  $("#bestCard").innerHTML =
+    `<div class="rec-row"><span><span class="medal">🥇</span>한 판 최고 점수</span><b>${S.bestScore} / ${Q_PER_SESSION}</b></div>
+     <div class="rec-row"><span><span class="medal">🔥</span>최고 연속 정답</span><b>${S.bestCombo}연속</b></div>
+     <div class="rec-row"><span><span class="medal">📚</span>누적 푼 문제</span><b>${S.total}문제</b></div>
+     <div class="rec-row"><span><span class="medal">🎯</span>전체 정답률</span><b>${S.total? Math.round(S.correct/S.total*100):0}%</b></div>`;
+  const names = {brain:"통합과학·사회",korean:"국어",english:"영어",math:"수학",idiom:"사자성어",proverb:"속담·관용구",quote:"한국사",통합과학:"통합과학",통합사회:"통합사회",한국사:"한국사"};
+  const rows = Object.entries(S.catStat)
+    .filter(([k,v])=>v.t>0)
+    .sort((a,b)=>b[1].t-a[1].t)
+    .map(([k,v])=>`<div class="rec-row"><span>${names[k]||k}</span><b>${Math.round(v.c/v.t*100)}% <span style="font-size:12px;color:var(--ink-soft)">(${v.c}/${v.t})</span></b></div>`)
+    .join("");
+  $("#catCard").innerHTML = rows || `<div class="empty" style="padding:20px">아직 기록이 없어요.<br>퀴즈를 풀면 영역별 정답률이 나타나요!</div>`;
+}
+
+/* ---------- 마이페이지 렌더 ---------- */
+function renderMy(){
+  const lv = levelOf(S.xp);
+  $("#myLv").textContent = "Lv."+lv.lv+" "+lvName(lv.lv);
+  $("#myXpBar").style.width = Math.round(lv.cur/lv.need*100)+"%";
+  $("#myXpTxt").textContent = lv.cur+" / "+lv.need+" XP  (다음 레벨까지 "+(lv.need-lv.cur)+")";
+  $("#badgeGrid").innerHTML = BADGES.map(b=>
+    `<div class="badge ${S.badges.includes(b.id)?"":"off"}" title="${b.d}"><div class="i">${b.i}</div><div class="n">${b.n}</div></div>`).join("");
+  ["dark","autoTts","sound"].forEach(k=>{
+    $("#tg"+k.charAt(0).toUpperCase()+k.slice(1)).classList.toggle("on", !!S.set[k]);
+  });
+  const sel = $("#voiceSel");
+  pickVoices();
+  if(!VOICES.list.length){
+    sel.innerHTML = "<option>기기 기본 음성</option>"; sel.disabled = true;
+  } else {
+    sel.disabled = false;
+    const autoName = VOICES.ko? VOICES.ko.name : "";
+    sel.innerHTML = "<option value=''>자동 (추천)</option>" +
+      VOICES.list.map(v=>`<option value="${v.name}" ${S.set.voice===v.name?"selected":""}>${v.name.replace(/Microsoft |Google |Online \(Natural\) - | Korean.*$/gi,"").replace(/[-–]\s*$/,"").trim()||v.name}</option>`).join("");
+    sel.onchange = ()=>{
+      S.set.voice = sel.value; save();
+      ttsCancel(); ttsSpeak("안녕하세요. 이 목소리로 문제를 읽어 드리겠습니다.");
+    };
+  }
+}
+function toggleSet(k){
+  S.set[k] = !S.set[k]; save();
+  if(k==="dark") applyDark();
+  renderMy();
+}
+function applyDark(){ document.body.classList.toggle("dark", !!S.set.dark); }
+function resetAll(){
+  if(!confirm("모든 기록(XP, 배지, 오답노트)이 지워져요. 정말 초기화할까요?")) return;
+  store.clear(); S = clone(DEF); save();
+  applyDark(); go("home"); toast("초기화 완료!");
+}
+
+/* ---------- TTS (어린이 친화 음성) ---------- */
+const VOICES = { ko:null, en:null, list:[] };
+function pickVoices(){
+  try{
+    if(!window.speechSynthesis || !speechSynthesis.getVoices) return;
+    const vs = speechSynthesis.getVoices();
+    VOICES.list = vs.filter(v=>v.lang && v.lang.toLowerCase().startsWith("ko"));
+    const score = (v, prefs) => {
+      const n = (v.name||"").toLowerCase();
+      let sc = 0;
+      prefs.forEach((p,i)=>{ if(n.includes(p)) sc = Math.max(sc, 100 - i*10); });
+      if(v.localService === false) sc += 5;          // 클라우드 음성이 보통 더 자연스러움
+      if(/natural|premium|enhanced|neural/.test(n)) sc += 8;
+      return sc;
+    };
+    const best = (lang, prefs) => vs
+      .filter(v=>v.lang && v.lang.toLowerCase().startsWith(lang))
+      .sort((a,b)=>score(b,prefs)-score(a,prefs))[0] || null;
+    VOICES.ko = best("ko", ["google","yuna","sora","kyuri","heami","injoon","siri"]);
+    VOICES.en = best("en", ["google us","samantha","aria","jenny","natural"]);
+  }catch(e){}
+}
+try{
+  pickVoices();
+  if(window.speechSynthesis) speechSynthesis.onvoiceschanged = pickVoices;
+}catch(e){}
+function resolveVoice(lang){
+  if(lang.startsWith("en")) return VOICES.en;
+  if(S.set.voice){
+    const v = VOICES.list.find(v=>v.name===S.set.voice);
+    if(v) return v;
+  }
+  return VOICES.ko;
+}
+/* 기호·수식을 아이가 듣기 좋은 말로 변환 */
+function toSpeech(t){
+  return String(t)
+    .replace(/f\(x\)\s*=\s*/g, "에프 엑스 는 ")
+    .replace(/\by\s*=\s*/g, "와이 는 ")
+    .replace(/는\s*−\s*/g, "는 마이너스 ")
+    .replace(/(^|[\s(,])-\s*(\d)/g, "$1마이너스 $2")
+    .replace(/log(\d+)\s+(\d+)/g, "로그 밑 $1 의 $2")
+    .replace(/f′\(([^)]+)\)/g, "에프 프라임 $1")
+    .replace(/f\(x\)/g, "에프 엑스")
+    .replace(/√(\d+)/g, "루트 $1")
+    .replace(/(\d+)\^(\d+)/g, "$1의 $2제곱")
+    .replace(/\)\^(\d+)/g, ")의 $1제곱")
+    .replace(/(\d+)\^([a-zA-Z])/g, "$1의 $2제곱")
+    .replace(/x²/g, "엑스 제곱").replace(/x³/g, "엑스 세제곱")
+    .replace(/²/g, "의 제곱").replace(/³/g, "의 세제곱")
+    .replace(/aₙ/g, "에이 엔").replace(/Sₙ/g, "에스 엔").replace(/ⁿ⁻¹/g, "의 엔 마이너스 1 제곱")
+    .replace(/(\d+)x/g, "$1 엑스").replace(/\bx\b/g, "엑스")
+    .replace(/\(−(\d+)\)/g, "(마이너스 $1)")
+    .replace(/%/g, "퍼센트")
+    .replace(/(\d+)\s*\/\s*(\d+)/g, "$2분의 $1")
+    .replace(/\s*\+\s*/g, " 더하기 ")
+    .replace(/\s*−\s*/g, " 빼기 ")
+    .replace(/\s*×\s*/g, " 곱하기 ")
+    .replace(/\s*÷\s*/g, " 나누기 ")
+    .replace(/=\s*\?/g, "는 얼마일까요? ")
+    .replace(/\s*=\s*/g, " 은 ")
+    .replace(/\s*vs\s*/gi, " 와 ")
+    .replace(/℃/g, "도")
+    .replace(/\(\s*\)|[＿_]{1,}/g, " 빈칸 ")
+    .replace(/[·↔]/g, ", ")
+    .replace(/["'“”‘’]/g, "")
+    .replace(/(\.\s*){2,}/g, ". ")
+    .replace(/(\d)(엑스)/g, "$1 $2")
+    .replace(/\s{2,}/g, " ").trim();
+}
+function ttsSpeak(text, lang, opt){
+  try{
+    opt = opt || {};
+    const L = lang || "ko-KR";
+    /* 문장 단위로 끊어 읽어 숨 고르기(자연스러운 쉼) */
+    const parts = String(text).split(/(?<=[.!?。])\s+|\n+/).filter(x=>x.trim());
+    let last = null;
+    (parts.length? parts : [text]).forEach(t=>{
+      const u = new SpeechSynthesisUtterance(t.trim());
+      u.lang = L;
+      u.rate  = opt.rate  != null ? opt.rate  : (L.startsWith("en")? 0.92 : 1.0);   // 담백한 낭독
+      u.pitch = opt.pitch != null ? opt.pitch : 1.0;                                // 밝고 상냥하게
+      const v = resolveVoice(L); if(v) u.voice = v;
+      speechSynthesis.speak(u); last = u;
+    });
+    return last;
+  }catch(e){ return null; }
+}
+function speakQ(q){
+  if(!window.speechSynthesis){ toast("이 기기에서는 음성 읽기가 지원되지 않아요."); return; }
+  ttsCancel();
+  if(q.en){
+    ttsSpeak(q.en, "en-US");
+    ttsSpeak("무슨 뜻일까요?");
+  } else {
+    const clean = toSpeech((q.hint? q.hint+". " : "") + q.q.replace(/\n/g,". "));
+    ttsSpeak(clean);
+  }
+}
+function speakFeedback(correct, q){
+  if(!S.set.autoTts || !window.speechSynthesis) return;
+  ttsCancel();
+  if(correct){
+    const cheers = ["정답입니다.","정확합니다. 개념이 잡혀 있네요.","맞았습니다. 좋은 흐름이에요.","정답입니다. 이 유형은 확실하군요.","완벽합니다."];
+    if(session && session.combo>=3) cheers.push(session.combo+"연속 정답. 집중력이 좋습니다.");
+    ttsSpeak(pick(cheers), "ko-KR", {pitch:1.0, rate:1.0});
+  } else {
+    ttsSpeak(pick(["아쉽습니다.","오답입니다. 해설을 확인해 보세요.","괜찮습니다. 오답노트에 담아 두겠습니다."]), "ko-KR", {pitch:1.0});
+    const isEn = /[A-Za-z]/.test(q.c[q.a]) && /^[A-Za-z0-9 .,'!?-]+$/.test(q.c[q.a]);
+    if(isEn){
+      ttsSpeak("정답은,"); ttsSpeak(q.c[q.a], "en-US"); ttsSpeak("입니다. 해설을 꼼꼼히 확인해 보세요.");
+    } else {
+      ttsSpeak("정답은, "+toSpeech(q.c[q.a])+"입니다. 해설을 꼼꼼히 확인해 보세요.");
+    }
+  }
+}
+$("#ttsBtn").onclick = ()=>{ if(session) speakQ(session.qs[session.i]); };
+
+/* ---------- STT (음성 답변) ---------- */
+let recog = null, recOn = false;
+function stopSTT(){ if(recog && recOn){ try{recog.stop();}catch(e){} } recOn=false; $("#sttBtn").classList.remove("rec"); }
+$("#sttBtn").onclick = ()=>{
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast("이 브라우저는 음성 인식을 지원하지 않아요 (크롬 추천!)"); return; }
+  if(recOn){ stopSTT(); return; }
+  recog = new SR();
+  recog.lang = "ko-KR"; recog.interimResults = false; recog.maxAlternatives = 3;
+  recOn = true; $("#sttBtn").classList.add("rec"); toast("🎙️ 말해 보세요! (예: 3번 / 정답 단어)");
+  recog.onresult = e => {
+    stopSTT();
+    const alts = [...e.results[0]].map(r=>r.transcript.trim());
+    handleVoice(alts);
+  };
+  recog.onerror = ()=>{ stopSTT(); toast("잘 못 들었어요. 다시 시도!"); };
+  recog.onend = ()=>{ recOn=false; $("#sttBtn").classList.remove("rec"); };
+  try{ recog.start(); }catch(e){ stopSTT(); }
+};
+function handleVoice(alts){
+  if(!session || session.answered) return;
+  const q = session.qs[session.i];
+  const numMap = {"1":1,"일":1,"일번":1,"2":2,"이":2,"이번":2,"3":3,"삼":3,"삼번":3,"4":4,"사":4,"사번":4};
+  const norm = s => s.replace(/\s|번|번이요|이요|입니다|요/g,"").toLowerCase();
+  for(const raw of alts){
+    const t = norm(raw);
+    if(numMap[t] && numMap[t] <= q._order.length){ toast("🎤 \""+raw+"\""); answer(numMap[t]-1); return; }
+    const m = t.match(/[1-4]/); 
+    if(m && Number(m[0])<=q._order.length){ toast("🎤 \""+raw+"\""); answer(Number(m[0])-1); return; }
+    const hit = q._order.findIndex(o => norm(o.c) === t || (t.length>=2 && norm(o.c).includes(t)));
+    if(hit >= 0){ toast("🎤 \""+raw+"\""); answer(hit); return; }
+  }
+  toast("🎤 \""+alts[0]+"\" — 못 찾았어요. 번호로 말해 보세요!");
+}
+
+/* ---------- 전역 버튼 효과음 ---------- */
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button");
+  if(!b) return;
+  if(b.classList.contains("choice")) return;       // 보기는 정답/오답음이 대신 울림
+  sndTap();
+}, true);
+
+/* ---------- 시작 ---------- */
+(function initStars(){
+  const box = $("#stars");
+  for(let i=0;i<26;i++){
+    const s = document.createElement("span");
+    s.className = "star"; s.textContent = pick(["✦","✧","⋆","·"]);
+    s.style.left = rnd(100)+"%"; s.style.top = rnd(100)+"%";
+    s.style.fontSize = (8+rnd(12))+"px"; s.style.animationDelay = (Math.random()*2.4)+"s";
+    box.appendChild(s);
+  }
+})();
+/* ---------- 웰컴 BGM (깜찍 칩튠, WebAudio 합성 — 파일 불필요) ---------- */
+const NOTE = {C3:130.81,E3:164.81,F3:174.61,G3:196.00,A3:220.00,G2:98.00,
+  C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00,C6:1046.50};
+const BGM = { playing:false, timer:null, next:0, master:null };
+const BGM_BEAT = 0.36; // 한 박(초) ≈ 111BPM의 8분음표
+const BGM_LEAD = [["C5",2],["E5",1],["G5",1],["E5",2],["D5",2],
+  ["F5",2],["A5",1],["F5",1],["E5",2],["C5",2],
+  ["D5",2],["F5",1],["A5",1],["G5",2],["E5",2],
+  ["C5",2],["D5",1],["E5",1],["C5",3],[null,1]];
+const BGM_BASS = [["C3",2],["G3",2],["A3",2],["E3",2],["F3",2],["C3",2],["G3",2],["G2",2],
+  ["C3",2],["G3",2],["A3",2],["E3",2],["F3",2],["G3",2],["C3",2],["C3",2]];
+const BGM_LOOP = BGM_BASS.reduce((t,n)=>t+n[1],0) * BGM_BEAT; // 32박
+
+function bgmNote(freq, t, dur, type, vol){
+  if(!freq) return;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.92);
+  o.connect(g); g.connect(BGM.master);
+  o.start(t); o.stop(t + dur);
+}
+function bgmScheduleLoop(t0){
+  let t = t0;
+  BGM_LEAD.forEach(([n,b])=>{ bgmNote(n && NOTE[n], t, b*BGM_BEAT, "sine", 0.18); t += b*BGM_BEAT; });
+  t = t0;
+  BGM_BASS.forEach(([n,b])=>{ bgmNote(NOTE[n], t, b*BGM_BEAT*0.95, "triangle", 0.26); t += b*BGM_BEAT; });
+  bgmNote(NOTE.C6, t0 + 12*BGM_BEAT, BGM_BEAT, "triangle", 0.10); // 반짝 ✨
+  bgmNote(NOTE.C6, t0 + 28*BGM_BEAT, BGM_BEAT, "triangle", 0.10);
+}
+function startBgm(){
+  if(BGM.playing || !S.set.bgm) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state === "suspended") AC.resume();
+    BGM.master = AC.createGain();
+    BGM.master.gain.value = 0.35;
+    BGM.master.connect(AC.destination);
+    BGM.next = AC.currentTime + 0.05;
+    bgmScheduleLoop(BGM.next);
+    BGM.next += BGM_LOOP;
+    BGM.timer = setInterval(()=>{
+      if(AC.currentTime > BGM.next - 0.6){ bgmScheduleLoop(BGM.next); BGM.next += BGM_LOOP; }
+    }, 200);
+    BGM.playing = true;
+  }catch(e){}
+}
+function stopBgm(fade){
+  if(!BGM.playing) return;
+  try{
+    clearInterval(BGM.timer);
+    if(fade && BGM.master){
+      BGM.master.gain.setValueAtTime(BGM.master.gain.value, AC.currentTime);
+      BGM.master.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + 0.6);
+      const m = BGM.master; setTimeout(()=>{ try{ m.disconnect(); }catch(e){} }, 700);
+    } else if(BGM.master){ BGM.master.disconnect(); }
+  }catch(e){}
+  BGM.playing = false;
+}
+function renderBgmBtn(){ $("#bgmBtn").classList.toggle("off", !S.set.bgm); }
+$("#bgmBtn").onclick = (e)=>{
+  e.stopPropagation();
+  S.set.bgm = !S.set.bgm; save(); renderBgmBtn();
+  if(S.set.bgm) startBgm(); else stopBgm(false);
+};
+/* 브라우저 자동재생 정책: 웰컴 화면의 첫 터치/클릭에서 시작 */
+$("#welcome").addEventListener("pointerdown", ()=>startBgm(), {passive:true});
+renderBgmBtn();
+
+$("#totalQ").textContent = TOTAL_Q.toLocaleString()+"+";
+$("#startBtn").onclick = ()=>{
+  try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){}
+  try{ if(window.speechSynthesis){ const u=new SpeechSynthesisUtterance(" "); u.volume=0; speechSynthesis.speak(u); } }catch(e){}
+  stopBgm(true);
+  checkAttendance(); go("home");
+};
+applyDark();
+</script>
+</body>
+</html>
